@@ -6,3 +6,4 @@
   Note: tested on Ubuntu 22.04.
 - Bash script for installing Firefox on Ubuntu as `.deb` package `install_firefox_ubuntu_deb.sh`.
   Note: tested on Ubuntu 22.04. May alter some `snap` settings.
+- Bash script for keyboard layout configuration `keymap_xfce.sh`. Sets us, ru and ua layouts for Super-1, Super-2 and Super-3 accordingly.
