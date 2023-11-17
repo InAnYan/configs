@@ -1,6 +1,3 @@
-(require 'dired-x)
-(setq-default dired-omit-files "^\\.[^.]\\|\\.cache\\|\\.emacs_saves\\|\\.git\\|.*.d$\\|.*.o$\\|.*#$")
-
 ;; Previewing latex fragments in org mode
 (setq org-latex-create-formula-image-program 'imagemagick) ;; Recommended to use imagemagick
 
@@ -8,32 +5,8 @@
 ; (load "preview-latex.el" nil t t)
 (setq LaTeX-command "latex -shell-escape")
 
-(load-theme 'modus-vivendi t)
 ;; Treat PascalStyle as separate words.
 (global-subword-mode)
-
-;; EAF stuff.
-(add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-application-framework/")
-(require 'eaf)
-(require 'eaf-markdown-previewer)
-(require 'eaf-browser)
-(require 'eaf-airshare)
-(require 'eaf-system-monitor)
-(require 'eaf-file-sender)
-(require 'eaf-file-manager)
-(require 'eaf-rss-reader)
-(require 'eaf-org-previewer)
-(require 'eaf-image-viewer)
-(require 'eaf-map)
-(require 'eaf-pdf-viewer)
-(require 'eaf-markmap)
-(require 'eaf-file-browser)
-(require 'eaf-pyqterminal)
-(require 'eaf-video-player)
-(require 'eaf-terminal)
-(require 'eaf-jupyter)
-(require 'eaf-camera)
-(require 'eaf-mindmap)
 
 ;; Some shr settings.
 (setq-default shr-width 80)
@@ -48,7 +21,7 @@
         ("lambda" . 955) ; λ
         ("->" . 8594)    ; →
         ("=>" . 8658)    ; ⇒
-        ("map" . 8614)    ; ↦
+        ("map" . 8614)   ; ↦
         ))
 (global-prettify-symbols-mode)
 
@@ -74,34 +47,54 @@
 ;; Replace selected text.
 (delete-selection-mode 1)
 
-;; Enable MELPA.
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(setq package-archives '(("elpa" . "http://tromey.com/elpa/")
+                         ("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+			 ("melpa" . "https://melpa.org/packages/"))
+
 (package-initialize)
 
+(unless package-archive-contents
+  (package-refresh-contents))
+
+(require 'use-package)
+
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns))
+  :ensure t
+  :config
+  (exec-path-from-shell-initialize))
+
+(use-package dired-x
+	     :ensure t
+	     :custom
+	     (dired-omit-files "^\\.[^.]\\|\\.cache\\|\\.emacs_saves\\|\\.git\\|.*.d$\\|.*.o$\\|.*#$"))
+
 ;; Which key. (What is this?).
-(require 'which-key)
-(which-key-mode)
+(use-package which-key
+	     :ensure t
+             :config
+	     (which-key-mode))
 
 ;; Enable Evil.
-(require 'evil)
-(evil-mode 1)
-
-;; SLIME.
-; (setq inferior-lisp-program "clisp")
-
-;; Use lsp-mode.
-(require 'lsp-mode)
-(add-hook 'c++-mode-hook #'lsp)
+(use-package evil
+	     :ensure t
+	     :config
+ 	     (evil-mode 1))
 
 ;; Use rust-mode.
-(require 'rust-mode)
+(use-package rust-mode
+	     :ensure t)
 
-;; Enable lsp in rust-mode.
-(add-hook 'rust-mode-hook #'lsp)
+;; Use lsp-mode.
+(use-package lsp-mode
+	     :ensure t
+	     :hook ((c++-mode-hook . lsp)
+		    (rust-mode-hook . lsp)))
 
 ;; Use lsp-ui.
-(require 'lsp-ui)
+(use-package lsp-ui
+	     :ensure t)
 
 ;; C/C++ indentation.
 (setq-default lsp-enable-indentation nil)
@@ -111,9 +104,12 @@
 (c-set-offset 'inline-open '0)
 
 ;; Use SLIME.
-(setq inferior-lisp-program "sbcl")
-(require 'slime)
-(slime-setup)
+(use-package slime
+	     :ensure t
+	     :custom
+	     (inferior-lisp-program "sbcl")
+	     :config
+	     (slime-setup))
 
 ;; Use flycheck.
 ; (require 'flycheck)
@@ -124,14 +120,18 @@
 ; (global-flycheck-mode t)
 ; (setq-default flycheck-clang-language-standard "c++20")
 
-;; Use dashboard package. Better looking starting buffer.
-; (require 'dashboard)
-; (dashboard-setup-startup-hook)
+; Use dashboard package. Better looking starting buffer.
+(use-package dashboard
+	     :ensure t
+	     :config
+	     (dashboard-setup-startup-hook))
 
 ;; Use company.
-(require 'company)
-(add-hook 'after-init-hook 'global-company-mode)
-(setq-default company-clang-arguments (list "-std=c++20"))
+(use-package company
+	     :ensure t
+	     :hook ((after-init-hook . global-company-mode))
+	     :custom
+	     (company-clang-arguments (list "-std=c++20")))
 
 ;; Use auto-complete.
 ; (require 'auto-complete)
@@ -142,34 +142,39 @@
 ; (global-auto-complete-mode t)
 
 ;; Use modern C++ font.
-(require 'modern-cpp-font-lock)
+(use-package modern-cpp-font-lock
+	     :ensure t)
 
 ;; Use magit.
-(require 'magit)
+(use-package magit
+	     :ensure t)
 
 ;; Autocomplete suggestions for "Find file". And probably more.
-(require 'ido)
-(ido-mode t)
+(use-package ido
+	     :ensure
+	     :config
+             (ido-mode t))
 
 ;; Similar to IDO, but for M-x.
-(require 'smex)
+(use-package smex
+	     :ensure t
+	     :config
 (smex-initialize)
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 ; That is old M-x command.
-(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command))
 
 ;; Use YAsnippet.
-(require 'yasnippet)
-(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
-(yas-global-mode 1)
+(use-package yasnippet
+	     :ensure t
+	     :custom
+    	     (yas-snippet-dirs '("~/.emacs.d/snippets"))
+	     :config
+	     (yas-global-mode 1))
 
 ;; Enable modus-vivendi theme.
-(load-theme 'modus-vivendi)
-
-
-
-
+(load-theme 'modus-vivendi t)
 
 ;; Autosave files are now in emacs_saves
 (setq backup-directory-alist '(("." . "./.emacs_saves/")))
@@ -224,12 +229,13 @@
                  ("begin" "$1" "$" "$$" "\\(" "\\[")))
  '(org-src-block-faces 'nil)
  '(package-selected-packages
-   '(pylint typescript-mode scribble-mode auctex org-fragtog flycheck-haskell vterm magit modern-cpp-font-lock auto-complete which-key sly fixmee todoist slime racket-mode haskell-mode sml-mode nasm-mode telega evil sr-speedbar rust-mode lsp-python-ms python-mode flycheck-cstyle flycheck-clang-analyzer ## flycheck-clangcheck yasnippet company-c-headers company lsp-ui lsp-mode cmake-mode solarized-theme smex gruber-darker-theme))
+   '(hindent haskell-emacs lsp-haskell exec-path-from-shell nim-mode pylint typescript-mode scribble-mode auctex org-fragtog flycheck-haskell vterm magit modern-cpp-font-lock auto-complete which-key sly fixmee todoist slime racket-mode haskell-mode sml-mode nasm-mode telega evil sr-speedbar rust-mode lsp-python-ms python-mode flycheck-cstyle flycheck-clang-analyzer ## flycheck-clangcheck yasnippet company-c-headers company lsp-ui lsp-mode cmake-mode solarized-theme smex gruber-darker-theme))
  '(pdf-view-midnight-colors '("#ffffff" . "#1e1e1e"))
  '(rcirc-colors
    '(modus-themes-fg-red modus-themes-fg-green modus-themes-fg-blue modus-themes-fg-yellow modus-themes-fg-magenta modus-themes-fg-cyan modus-themes-fg-red-warmer modus-themes-fg-green-warmer modus-themes-fg-blue-warmer modus-themes-fg-yellow-warmer modus-themes-fg-magenta-warmer modus-themes-fg-cyan-warmer modus-themes-fg-red-cooler modus-themes-fg-green-cooler modus-themes-fg-blue-cooler modus-themes-fg-yellow-cooler modus-themes-fg-magenta-cooler modus-themes-fg-cyan-cooler modus-themes-fg-red-faint modus-themes-fg-green-faint modus-themes-fg-blue-faint modus-themes-fg-yellow-faint modus-themes-fg-magenta-faint modus-themes-fg-cyan-faint modus-themes-fg-red-intense modus-themes-fg-green-intense modus-themes-fg-blue-intense modus-themes-fg-yellow-intense modus-themes-fg-magenta-intense modus-themes-fg-cyan-intense))
  '(safe-local-variable-values
-   '((eval setq flycheck-clang-include-path
+   '((company-clang-arguments "-Iinclude")
+     (eval setq flycheck-clang-include-path
            (list
             (expand-file-name "include/"))))))
 (custom-set-faces
