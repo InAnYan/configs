@@ -1,0 +1,81 @@
+#+TITLE: Emacs =start_exwm.sh= script
+#+PROPERTY: header-args:sh :tangle ./export/start-exwm.sh :comments yes
+
+* Description
+
+This file is used for proper set up of my Emacs Desktop Environment (EDE). It contains various commands that should be run before EXWM (and Emacs in ngeneral).
+
+Overall, taken a lot from: [[https://github.com/daviwil/emacs-from-scratch/blob/2805904966dbd5810ee735e25c4b427014761be5/Desktop.org#desktop-file]].
+
+** Set up XIM
+
+XIM is used for using Emacs built-in input methods. Previously, I tried solutions with =setxkbmap=, but they are much much worse than Emacs's input methods.
+
+Taken from: [[https://weblog.zamazal.org/more-fun-with-exwm/]].
+
+#+begin_src sh
+
+  export XMODIFIERS=@im=exwm-xim
+  export GTK_IM_MODULE=xim
+  export QT_IM_MODULE=xim
+  export CLUTTER_IM_MODULE=xim
+
+#+end_src
+
+** Screen compositor
+
+It's just better be with compositor. It allowes for styling windows, animations, and transparency.
+
+However, my main use case for compositor is to get rid of screen flickering (I saw on StackOverflow somewhere that this solves this problem).
+
+#+begin_src sh
+
+  picom &
+
+#+end_src
+
+** Screen locking                                                   :unused:
+
+I would like to use it, but unfortunately, I can't find a way to unbind =s-l= keybindings, as I need this keybinding for other purposes.
+
+#+begin_src sh :tangle no
+
+  xss-lock -- slock &
+
+#+end_src
+
+** Some =polybar= set up
+
+IDK how and why this works, but it somehow needed to show polybar on all monitors (though, this is a subject of change).
+
+Taken from: [[https://github.com/polybar/polybar/issues/763#issuecomment-331604987]].
+
+#+begin_src sh
+
+  for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
+      MONITOR=$m polybar --reload iay &
+  done
+
+#+end_src
+
+** SSH agent
+
+I hope it works.
+
+#+begin_src sh
+
+  eval $(ssh-agent)
+
+#+end_src
+
+** Fire-up Emacs
+
+Start Emacs and load desktop init file.
+
+Though, is this a vulnerability? I'm using my home directory configuration, what if other user will login from this config?
+
+#+begin_src sh
+
+  exec dbus-launch emacs -mm --debug-init -l /home/ruslan/.emacs.d/desktop.el
+
+#+end_src

@@ -1,0 +1,24 @@
+#+TITLE: Emacs =emacs.desktop= entry
+#+PROPERTY: header-args:conf :tangle ./export/emacs.desktop :comments yes
+
+* Description
+
+Contains code for showing my Emacs Desktop Environment (EDE) as an entry in login managers.
+
+Unfortunately, my Arch + =lightdm= can't use symlinks. Need to investigate...
+
+* Source
+
+#+begin_src conf
+
+  [Desktop Entry]
+  Name=EXWM
+  Comment=Emacs Window Manager
+  # Vulnerability?
+  Exec=sh /home/ruslan/.emacs.d/start_exwm.sh
+  TryExec=sh
+  Type=Application
+  X-LightDM-DesktopName=exwm
+  DesktopNames=exwm
+
+#+end_src

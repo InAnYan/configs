@@ -1,0 +1,11 @@
+# [[file:../emacs-desktop-entry.org::*Source][Source:1]]
+[Desktop Entry]
+Name=EXWM
+Comment=Emacs Window Manager
+# Vulnerability?
+Exec=sh /home/ruslan/.emacs.d/start_exwm.sh
+TryExec=sh
+Type=Application
+X-LightDM-DesktopName=exwm
+DesktopNames=exwm
+# Source:1 ends here

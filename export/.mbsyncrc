@@ -1,0 +1,68 @@
+IMAPAccount gmail
+Host imap.gmail.com
+User ruslanpopov1512@gmail.com
+PassCmd "cat ~/.gmail_password"
+TLSType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail-local
+Subfolders Verbatim
+Path /mnt/data/mail/gmail/
+Inbox /mnt/data/mail/gmail/inbox
+
+Channel gmail
+Far :gmail-remote:
+Near :gmail-local:
+Patterns *
+Create Both
+Expunge Both
+SyncState *
+
+IMAPAccount uni-new
+Host outlook.office365.com
+User popov_r@365.dnu.edu.ua
+AuthMechs XOAUTH2
+PassCmd "oama access popov_r@365.dnu.edu.ua"
+TLSType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore uni-new-remote
+Account uni-new
+
+MaildirStore uni-new-local
+Subfolders Verbatim
+Path /mnt/data/mail/uni-new/
+Inbox /mnt/data/mail/uni-new/inbox
+
+Channel uni-new
+Far :uni-new-remote:
+Near :uni-new-local:
+Patterns *
+Create Both
+SyncState *
+
+IMAPAccount uni-old
+Host outlook.office365.com
+User popov_ro@ffeks.dnu.edu.ua
+AuthMechs XOAUTH2
+PassCmd "oama access popov_ro@ffeks.dnu.edu.ua"
+TLSType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore uni-old-remote
+Account uni-old
+
+MaildirStore uni-old-local
+Subfolders Verbatim
+Path /mnt/data/mail/uni-old/
+Inbox /mnt/data/mail/uni-old/inbox
+
+Channel uni-old
+Far :uni-old-remote:
+Near :uni-old-local:
+Patterns *
+Create Both
+SyncState *

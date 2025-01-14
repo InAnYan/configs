@@ -1,0 +1,44 @@
+#+TITLE: =msmtp= configuration
+#+PROPERTY: header-args:conf :tangle ./export/.msmtprc
+
+* Description
+
+Modern email services utilize Oauth. I had so many headaches trying to set up =isync= and =mu4e= to handle such emails.
+
+Reading is done, and it was relatively simple. HOWEVER, sending mails... I could not configure Emacs to use Oauth, so I decided to use =msmtp= client.
+
+UPDATE 1: HOW FUCKING INTERESTING: so you can use =xoauth2= for reading emails, but not sending. Guess, I have to use =davmail= (there should be a solid reason why it's developed by French Military Ministry, sorry for the misspelling).
+
+UPDATE 2: =davmail= is not what I thought...
+
+* Place
+
+=~/.msmtprc= or =$XDG_CONFIG_HOME/msmtp/config= .
+
+* Code
+
+** Defaults for all accounts
+
+#+begin_src conf
+
+  defaults
+  auth           on
+  tls            on
+  tls_trust_file /etc/ssl/certs/ca-certificates.crt
+  logfile        ~/.msmtp.log
+
+#+end_src
+
+** New university email
+
+#+begin_src conf
+
+  account popov_r@365.dnu.edu.ua
+  from popov_r@365.dnu.edu.ua
+  user popov_r@365.dnu.edu.ua
+  auth xoauth2
+  passwordeval oama access popov_r@365.dnu.edu.ua
+  host smtp.office365.com
+  port 587
+
+#+end_src

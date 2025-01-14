@@ -1,0 +1,18 @@
+#+TITLE: Emacs =Xmodmap= file
+#+PROPERTY: header-args:sh :tangle ./export/Xmodmap
+
+* Description
+
+Just a small script for rebinding Caps Lock to Control key. Part of my Emacs Desktop Environment (EDE).
+
+* Source
+
+#+begin_src sh
+
+clear lock
+clear control
+keycode 66 = Control_L
+add control = Control_L
+add Lock = Control_R
+
+#+end_src

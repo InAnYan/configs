@@ -1,0 +1,163 @@
+#+TITLE: =isync= configuration
+#+PROPERTY: header-args:conf :tangle ./export/.mbsyncrc
+
+* Description
+
+Configuration for =isync=, for syncing email.
+
+Yeah, program is =isync= , but the executable is =mbsync= , classic moment.
+
+Setting up with OAuth giving me headaches.
+
+* How to use
+
+I always forget this. So, how to manage the email:
+
+1. Sync with =isync= (which is =mbsync=).
+2. Index with =mu=.
+
+** Syncing
+n
+There should be a dedicated directory for mail. This directory stores subdirectories of different email-contexts (accounts).
+
+In order to sync, you should have a file in that mail directory =.mbsyncrc= ([[Source]]). Then, you need to call:
+
+#+begin_src sh
+
+  mbsync -c .mbsyncrc -a
+
+#+end_src
+
+This command will sync all mails. Initial sync may take a lot of time, but then not.
+
+** Indexing
+
+Then you need to make an index using =mu=.
+
+#+begin_src sh
+
+  mu init --maildir=<YOUR_MAIL_DIR> --my-address=<YOUR_ADDRESS> --muhome=<MU_HOME>
+
+#+end_src
+
+TODO: Write for several my-addresses.
+
+Typically, for =MU_HOME=, I make a dir =muhome= and set it. Oh, and =YOUR_MAIL_DIR= should be absolute.
+
+Then, you need to run index:
+
+#+begin_src sh
+
+  mu index --muhome=<MU_HOME>
+
+#+end_src
+
+* Secrets management
+
+I recently found =oama= and =oath2token= on [[https://wiki.archlinux.org/title/Isync][Arch docs]].
+
+So, you need to call this:
+
+#+begin_src sh
+
+  oama authorize <SERVICE> <EMAIL>
+
+#+end_src
+
+And then in =.mbsyncrc= use this:
+
+#+begin_src conf :tangle no
+
+  AuthMechs XOAUTH2
+  PassCmd "oama access <EMAIL>"
+
+#+end_src
+
+* Source
+
+** Gmail
+
+#+begin_src conf
+
+  IMAPAccount gmail
+  Host imap.gmail.com
+  User ruslanpopov1512@gmail.com
+  PassCmd "cat ~/.gmail_password"
+  TLSType IMAPS
+  CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+  IMAPStore gmail-remote
+  Account gmail
+
+  MaildirStore gmail-local
+  Subfolders Verbatim
+  Path /mnt/data/mail/gmail/
+  Inbox /mnt/data/mail/gmail/inbox
+
+  Channel gmail
+  Far :gmail-remote:
+  Near :gmail-local:
+  Patterns *
+  Create Both
+  Expunge Both
+  SyncState *
+
+#+end_src
+
+** University new mail
+
+#+begin_src conf
+
+  IMAPAccount uni-new
+  Host outlook.office365.com
+  User popov_r@365.dnu.edu.ua
+  AuthMechs XOAUTH2
+  PassCmd "oama access popov_r@365.dnu.edu.ua"
+  TLSType IMAPS
+  CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+  IMAPStore uni-new-remote
+  Account uni-new
+
+  MaildirStore uni-new-local
+  Subfolders Verbatim
+  Path /mnt/data/mail/uni-new/
+  Inbox /mnt/data/mail/uni-new/inbox
+
+  Channel uni-new
+  Far :uni-new-remote:
+  Near :uni-new-local:
+  Patterns *
+  Create Both
+  SyncState *
+
+#+end_src
+
+** University old mail
+
+#+begin_src conf
+
+  IMAPAccount uni-old
+  Host outlook.office365.com
+  User popov_ro@ffeks.dnu.edu.ua
+  AuthMechs XOAUTH2
+  PassCmd "oama access popov_ro@ffeks.dnu.edu.ua"
+  TLSType IMAPS
+  CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+  IMAPStore uni-old-remote
+  Account uni-old
+
+  MaildirStore uni-old-local
+  Subfolders Verbatim
+  Path /mnt/data/mail/uni-old/
+  Inbox /mnt/data/mail/uni-old/inbox
+
+  Channel uni-old
+  Far :uni-old-remote:
+  Near :uni-old-local:
+  Patterns *
+  Create Both
+  SyncState *
+
+#+end_src

@@ -1,0 +1,41 @@
+#+TITLE: My Matrix with bridges
+#+PROPERTY: header-args:yaml :tangle ./export/matrix-docker-compose.yaml :padline no
+
+* Description
+
+This is a =docker-compose.yaml= file that sets up my own Matrix homeserver and adds bridges to them.
+
+* Source
+
+** Preamble
+
+#+begin_src yaml
+
+services:
+
+#+end_src
+
+** Synapse
+
+*** Instance
+
+#+begin_src yaml
+  image: matrixdotorg/synapse:latest
+  container_name: synapse
+  restart: unless-stopped
+  ports:
+    - 12001:8008
+  volumes:
+    - ./data:/data
+  environment:
+    - SYNAPSE_SERVER_NAME=192.168.31.100
+    - SYNAPSE_REPORT_STATS=no
+#+end_src
+
+*** Database
+
+* File local variables                                     :noexport:
+
+# Local Variables:
+# org-src-preserve-indentation: t
+# End:

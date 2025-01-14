@@ -1,0 +1,337 @@
+i#+TITLE: Archived code in Emacs init configuration
+
+* Description
+
+In this file I will store some code blocks that I used previously in my Emacs =init.el=, currently I don't use them.
+
+I decided to archive them, as they might be useful, or I might return to them.
+
+* Code
+
+** Language switching keybindings with =setxkbmap=                  :unused:
+
+#+begin_src emacs-lisp :tangle no
+
+  (global-set-key (kbd "M-u")
+                  (lambda () (interactive)
+                    (iay/run-cmd "setxkbmap us")))
+
+  (global-set-key (kbd "M-г")
+                  (lambda () (interactive)
+                    (iay/run-cmd "setxkbmap us")))
+
+
+  (global-set-key (kbd "M-i")
+                  (lambda () (interactive)
+                    (iay/run-cmd "setxkbmap ru")))
+
+  (global-set-key (kbd "M-ш")
+                  (lambda () (interactive)
+                    (iay/run-cmd "setxkbmap ru")))
+
+
+  (global-set-key (kbd "M-o")
+                  (lambda () (interactive)
+                    (iay/run-cmd "setxkbmap ua")))
+
+  (global-set-key (kbd "M-щ")
+                  (lambda () (interactive)
+                    (iay/run-cmd "setxkbmap ua")))
+
+#+end_src
+
+** Keybindings
+
+*** =evil= mode!
+
+Thanks to [[https://www.reddit.com/r/emacs/comments/i2pflu/comment/g5hxdst/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button]] now input methods work in X windows (EXWM) with this configuration.
+
+#+begin_src emacs-lisp
+
+  (use-package evil
+    :config
+    (evil-mode 1)
+    (evil-set-initial-state 'exwm-mode 'emacs))
+
+#+end_src
+
+*** =general=
+
+It's a package for quick and simple key bindings creation.
+
+#+begin_src emacs-lisp
+
+  (use-package general
+    :config
+    (general-evil-setup t)
+    (general-auto-unbind-keys))
+
+#+end_src
+
+How =general= is used is presented in [[Modes][Modes]] section.
+
+*** =key-chord=
+
+My beloved =jj=! Taken from [[https://stackoverflow.com/a/10679291]].
+
+#+begin_src emacs-lisp
+
+  (use-package key-chord
+    :config
+    (key-chord-mode 1)
+    (key-chord-define evil-insert-state-map "jj" 'evil-normal-state))
+
+#+end_src
+
+* Configs of modes
+
+** Evil
+
+*** General
+
+Use =SPC= as a leader, my own VIM-like commands.
+
+For commenting groups of keybindings: [[https://emacs.stackexchange.com/a/55015]].
+
+#+begin_src emacs-lisp
+
+  (general-create-definer my-leader
+    :prefix
+    "SPC"
+    :keymaps
+    'override
+
+    :states
+    '(normal visual))
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+  (my-leader
+    "" '(:ignore t :which-key "leader")
+
+    "w" 'evil-write
+    "d" 'dired-jump-other-window
+    "D" 'dired-jump
+    "c" 'org-capture
+    "o" 'other-window ; Similar to =C-x o=.
+    "k" 'kill-buffer ; Shortcut.
+
+    "e" '(:ignore t :which-key "evaluate")
+    "e x" 'counsel-M-x
+    "e e" 'eval-expression
+    "e b" 'eval-buffer
+
+    "a" '(:ignore t :which-key "org agenda")
+    "a m" 'org-agenda
+    "a l" 'org-agenda-list
+    "a t" 'org-todo-list
+
+    "b" '(:ignore t :which-key "buffers")
+    "b l" 'list-buffers
+    "b b" 'counsel-ibuffer
+    "b g" 'org-babel-tangle-jump-to-org
+    "b e" 'eval-buffer
+    "b k" 'kill-buffer
+
+    "f" '(:ignore t :which-key "files")
+    "f f" 'counsel-find-file
+
+    "h" '(:ignore t :which-key "help")
+    "h v" 'helpful-variable
+    "h c" 'helpful-command
+    "h k" 'helpful-key
+
+    "h" '(:ignore t :which-key "lsp/language")
+    "l a" 'lsp-execute-code-action
+    )
+
+#+end_src
+
+*** Window management
+
+#+begin_src emacs-lisp
+
+  (general-create-definer my-window-keys
+    :keymaps
+    'override
+
+    :states
+    '(normal visual))
+
+  (my-window-keys
+   "C-h" 'windmove-left
+   "C-j" 'windmove-down
+   "C-k" 'windmove-up
+   "C-l" 'windmove-right
+
+   "\\" 'split-window-below
+   "|" 'split-window-right
+
+   "_" 'delete-window
+
+   "-" 'text-scale-decrease
+   "+" 'text-scale-increase
+
+   )
+
+#+end_src
+
+*** Misc
+
+#+begin_src emacs-lisp
+
+  (evil-define-key 'normal ivy-mode-map "C-<return>" 'ivy-immediate-done)
+
+#+end_src
+
+*** Turn off evil for some modes                                   :unused:
+
+Um, I should probably configure this myself. Hey, I actually copied this snippet from some comment on Reddit, but I forgot to mention source.
+
+#+begin_src emacs-lisp :tangle no
+
+  (evil-set-initial-state 'ibuffer-mode 'normal)
+  (evil-set-initial-state 'bookmark-bmenu-mode 'normal)
+  ; (evil-set-initial-state 'dired-mode 'emacs)
+  (evil-set-initial-state 'sunrise-mode 'emacs)
+  (evil-set-initial-state 'telega-chat-mode 'emacs)
+
+#+end_src
+
+*** =evil-smartparens=
+
+#+begin_src emacs-lisp
+
+  (use-package evil-smartparens
+    :hook
+    (smartparens-enabled-hook . evil-smartparens-mode))
+
+#+end_src
+
+** LaTeX
+
+*** LaTeX VIM-like keybindings
+
+#+begin_src emacs-lisp
+
+  (my-leader
+    :keymaps 'LaTeX-mode-map
+
+    "i e" 'LaTeX-environment
+    "i s" 'LaTeX-section
+
+    "p" 'latex-preview-pane-update
+
+    "l c" 'reftex-citation
+
+    "d" 'TeX-command-master
+
+    "l p" 'latex-preview-pane-mode
+    )
+
+#+end_src
+
+** Org
+
+*** =org-mode= keybindings
+
+Some advice taken from: [[https://www.reddit.com/r/emacs/comments/10h1u6w/comment/j56m58x/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button]].
+
+#+begin_src emacs-lisp
+
+  (defun iay/section-insert ()
+    (interactive)
+    (org-insert-heading-respect-content)
+    (evil-insert-state))
+
+  (general-define-key
+   :states
+   '(normal)
+
+   :keymap
+   'org-mode-map
+
+   ; "TAB" 'org-cycle
+
+   "s n" 'iay/section-insert
+
+   "s h" 'org-do-promote
+   "s j" 'org-metadown
+   "s k" 'org-metaup
+   "s l" 'org-do-demote
+
+   "J" 'org-previous-visible-heading
+   "K" 'org-next-visible-heading
+
+   "s d" 'org-cut-subtree
+   "s y" 'org-copy-subtree
+   "s p" 'org-paste-subtree
+
+   "t d" 'org-todo
+   "t c" 'org-toggle-checkbox
+   "t r" 'org-toggle-radio-button
+   "t s" 'org-schedule
+   "t D" 'org-deadline
+   "t p" 'org-priority
+   "t m" 'org-time-stamp
+   "t a" 'counsel-org-tag
+
+   "R" 'org-refile
+
+   "T" 'org-babel-tangle
+   )
+
+#+end_src
+
+*** Org Styling                                                    :unused:
+
+#+begin_src emacs-lisp :tangle no
+
+  ;; Replace list hyphen with dot
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+
+  ;; Set faces for heading levels
+  (dolist (face '((org-level-1 . 1.2)
+                  (org-level-2 . 1.1)
+                  (org-level-3 . 1.0)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.0)
+                  (org-level-6 . 1.0)
+                  (org-level-7 . 1.0)
+                  (org-level-8 . 1.0)))
+    (set-face-attribute (car face) nil :font "FreeSans" :weight 'bold :height (cdr face)))
+
+  (set-face-attribute 'variable-pitch nil :font "FreeSans" :height 160 :weight 'regular)
+
+  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+
+  (defun efs/org-mode-visual-fill ()
+    (setq visual-fill-column-width 200
+          visual-fill-column-center-text t)
+    (visual-fill-column-mode 1))
+
+#+end_src
+
+*** Org Emphasis markers                                           :unused:
+
+Taken from: [[https://stackoverflow.com/a/24540651]]. Not ideal...
+
+#+begin_src emacs-lisp :tangle no
+
+  (setcar org-emphasis-regexp-components " \t('\"{[:alpha:]")
+  (setcar (nthcdr 1 org-emphasis-regexp-components) "[:alpha:]- \t.,:!?;'\")}\\")
+  (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
+
+#+end_src

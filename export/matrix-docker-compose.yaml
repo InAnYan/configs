@@ -1,0 +1,11 @@
+services:
+  image: matrixdotorg/synapse:latest
+  container_name: synapse
+  restart: unless-stopped
+  ports:
+    - 12001:8008
+  volumes:
+    - ./data:/data
+  environment:
+    - SYNAPSE_SERVER_NAME=192.168.31.100
+    - SYNAPSE_REPORT_STATS=no

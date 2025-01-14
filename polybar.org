@@ -1,0 +1,187 @@
+#+TITLE: Polybar config
+#+PROPERTY: header-args:conf :tangle ./export/polybar-config.ini :comments yes
+
+* Description
+
+I use =polybar= as my title bar in my Emacs Desktop Environment (EDE).
+
+Made to be minimal.
+
+However, I use it in several monitors, which makes problems with system tray, as only one global system tray instance should exist.
+
+* Main config
+
+#+begin_src conf
+
+  [bar/iay]
+  monitor = ${env:MONITOR:}
+
+  modules-left = exwm-workspace cpu temp ram fs
+  modules-right = kbd vol bat tray date
+  modules-center = time
+  separator = " | "
+
+  font-0 = JetBrainsMono Nerd Font Mono:size=10
+  font-1 = JetBrainsMono Nerd Font Mono:size=12
+
+  height = 25
+  padding-right = 1
+  padding-left = 1
+
+  enable-ipc = true
+
+#+end_src
+
+* Colors
+
+#+begin_src conf
+
+  [colors/iay]
+  red = #ff3052
+  green = #0f0
+  blue = #00f7ff
+  yellow = #ff0
+  ; It's not violet, I know :) .
+  violet = #ff7bf1
+
+#+end_src
+
+* Modules
+
+** Date
+
+#+begin_src conf
+
+  [module/date]
+  type = internal/date
+  date = %d.%m.%Y
+
+#+end_src
+
+** Time
+
+#+begin_src conf
+
+  [module/time]
+  type = internal/date
+  interval = 1.0
+  date = %H:%M:%S
+
+#+end_src
+
+** Tray
+
+#+begin_src conf
+
+  [module/tray]
+  type = internal/tray
+  tray-spacing = 5.0
+  override-redirect = true
+
+#+end_src
+
+** EXWM workspaces
+
+Taken from: [[https://github.com/daviwil/emacs-from-scratch/blob/75f1d4e08512c49ea073c26058df6d4cca3a0d6b/Desktop.org#panel-with-polybar]].
+
+#+begin_src conf
+
+  [module/exwm-workspace]
+  type = custom/ipc
+  hook-0 = emacsclient -e "exwm-workspace-current-index"
+  initial = 1
+
+#+end_src
+
+** CPU
+
+#+begin_src conf
+
+  [module/cpu]
+  type = internal/cpu
+  format = CPU: <label>
+  format-foreground = ${colors/iay.green}
+
+#+end_src
+
+** RAM
+
+#+begin_src conf
+
+  [module/ram]
+  type = internal/memory
+  format = RAM: <label>
+  format-foreground = ${colors/iay.blue}
+
+#+end_src
+
+** Volume
+
+#+begin_src conf
+
+  [module/vol]
+  type = internal/pulseaudio
+  format-volume = VOL: <label-volume>
+  format-volume-foreground = ${colors/iay.blue}
+
+#+end_src
+
+** File system left storage
+
+#+begin_src conf
+
+  [module/fs]
+  type = internal/fs
+  mount-0 = /
+  mount-1 = /mnt/data
+  format-mounted = <label-mounted>
+  label-mounted = %mountpoint%: %percentage_free%% of %total%
+  format-mounted-foreground = ${colors/iay.red}
+
+#+end_src
+
+** Battery charge and status
+
+#+begin_src conf
+
+  [module/bat]
+  type = internal/battery
+  battery = BAT1
+  adapter = ACAD
+
+  label-full = FULL
+  format-full = BAT: <label-full>
+  format-full-foreground = ${colors/iay.green}
+
+  label-charging = CH %percentage%
+  format-charging = BAT: <label-charging>
+  format-charging-foreground = ${colors/iay.yellow}
+
+  label-discharging = DS %percentage%
+  format-discharging = BAT: <label-discharging>
+  format-discharging-foreground = ${colors/iay.violet}
+
+#+end_src
+
+** Temperature
+
+#+begin_src conf
+
+  [module/temp]
+  type = internal/temperature
+  format = TEMP: <label>
+
+#+end_src
+
+** Keyboard layout
+
+Not like it matters when I use Emacs's input method.
+
+#+begin_src conf
+
+  [module/kbd]
+  type = internal/xkeyboard
+  blacklist-0 = num lock
+  blacklist-1 = scroll lock
+
+#+end_src
