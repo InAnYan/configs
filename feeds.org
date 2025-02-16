@@ -1,0 +1,108 @@
+* Feeds                                                              :elfeed:
+** Blogs                                                              :blog:
+*** Technical                                                   :technical:
+**** [[http://nullprogram.com/feed/][Chris Wellons (null program)]]
+**** [[https://thephd.dev/feed.xml][JeanHeyd Meneide (The pasture)]]
+**** [[https://codingquark.com/feed.xml][Dhavan (codingquark)]]
+**** [[https://kitchingroup.cheme.cmu.edu/blog/feed/index.xml][Kitchin RG]]
+**** [[http://hugoduncan.org/index.xml][Hugo Duncan]]
+**** [[https://jeffbradberry.com/feeds/all.atom.xml][Jeff Bradberry]]
+**** [[https://martin-thoma.com/feeds/index.xml][Martin Thoma]]
+**** [[https://cachestocaches.com/feed][Gregory J Stein (Caches to Caches)]]
+**** [[https://gjstein.com/feed][Gregory J. Stein (personal)]]
+**** [[https://www.philnewton.net/blog/feed.xml][Phil Newton]]
+**** [[https://www.spritely.institute/feed.xml][Spritely Institute]]
+**** [[https://williambert.online/atom.xml][William Bert]]
+**** [[https://jvns.ca/atom.xml][Julia Evans]]
+**** [[https://xenodium.com/feed][Álvaro Ramírez (xenodium)]]
+**** [[https://www.wouterspekkink.org/feed.xml][Wouter A. H. Spekkink]]
+**** [[https://fasterthanli.me/index.xml][Amos (fasterthanlime)]]
+**** [[https://klisp.org/blog/feed][klisp]]
+**** [[http://bootstrappingartificialintelligence.fr/WordPress3/feed/][Jacques Pitrat]]
+**** [[http://lisp-univ-etc.blogspot.com/feeds/posts/default][Vsevolod Dyomkin (lisp-univ-etc)]]
+**** [[https://systemcrafters.net/rss/news.xml][David Wilson (System Crafters)]]
+**** [[https://irreal.org/blog/?feed=rss2][Anonymous (Irreal)]]
+**** [[https://www.topbug.net/?feed=rss2][Hong (Top Bug Net)]]
+**** [[https://200ok.ch/atom.xml][200ok]]
+**** [[https://www.cosroe.com/feed.atom][Fergus Baker]]
+**** [[https://sites.uw.edu/bxf4/feed/][Brian P. Falherty]]
+**** [[https://jherrlin.github.io/index.xml][John Herrlin]]
+**** [[https://lambdaland.org/index.xml][Ashton Wiersdorf (Lambda Land)]]
+**** [[https://tech.tonyballantyne.com/?feed=rss2][Tonny Ballantyne]]
+**** [[https://arnaudr.io/feeds/all.atom.xml][Arnaud Rebillout]]
+**** [[https://norvig.com/rss-feed.xml][Peter Norvig]]
+**** [[https://articles.59.ca/feed.php?num=10&linkto=current&content=html][Bruce Walzer]]
+**** [[https://www.devdungeon.com/rss.xml][John Daniel Leon (DevDungeon)]]
+**** [[https://withblue.ink/feed.xml][Alessandro Segala (With Blue Ink)]]
+**** [[https://frank.sauerburger.io/feed.xml][Frank Sauerburger]]
+**** [[https://elektito.com/blog/index.xml][Anonymous (elektito)]]
+**** [[https://michaelneuper.com/index.xml][Michael Neuper]]
+*** Science                                                       :science:
+**** [[http://panbibliotekar.blogspot.com/feeds/posts/default][Anonymous (Pan Bibliotekar)]]
+*** Telegram channels                                             :telegram:
+**** Technical                                                  :technical:
+***** AI                                                              :ai:
+****** [[https://ch2rss.fflow.net/lovedeathtransformers][Love. Death. Transformers (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40tch_net&format=Atom][ДругОпенсоурса (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40lovedeathtransformers&format=Atom][Love. Death. Transformers (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40r77_ai&format=Atom][R77 AI (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40ai_newz&format=Atom][эйай ньюз (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40denissexy&format=Atom][Denis Sexy IT (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40rybolos_channel&format=Atom][(Kali Novskaya (Telegram))]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40seeallochnaya&format=Atom][Сиолошная (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40ai_mind_set&format=Atom][AI Mindset (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40pseudolabeling&format=Atom][Запрети мне псевдолейблить (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40researchoshnaya&format=Atom][Рисерчошная (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40kyiv_dvizh_ai&format=Atom][КИЇВСЬКИЙ НЕЙРОДВІЖ (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40RecSysChannel&format=Atom][RecSys Channel (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40synthvol&format=Atom][Vol Building AGI (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40NeuralShit&format=Atom][Neural Shit (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40tech_priestess&format=Atom][Техножрица (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40AGI_and_RL&format=Atom][AGI_and_RL (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40grokaem_seby&format=Atom][grokaem себя (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40gonzo_ML&format=Atom][gonzo-обзоры ML статей (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40llm_under_hood&format=Atom][LLM под капотом (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40dealerAI&format=Atom][Dealer .AI (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40hackernewslive&format=Atom][Hacker News? (Telegram)]]                                       :low:
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40linux_ukraine&format=Atom][Комора Лінуксоїда (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40chatgpt3&format=Atom][1337 (Telegram)]]                                               :low:
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40bles_techno&format=Atom][ТЕХНО BLES (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40softwareengineervlog&format=Atom][S0ER (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40github&format=Atom][GitHub Community (Telegram)]]                                   :low:
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40tbtpm&format=Atom][The Best Tvarynka (Telegram)]]
+**** Math                                                            :math:
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40mathmemories&format=Atom][воспоминание математиков (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40forodirchNEWS&format=Atom][Кофейный теоретик (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40LoveDeathMath&format=Atom][Love, Death & Math (Telegram)]]                                 :low:
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40math_channels&format=Atom][Математические телеграмм-каналы (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40mathschan&format=Atom][Mathematics Channel (Telegram)]]                                :low:
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40tekhnar_news&format=Atom][Технар (Telegram)]]
+**** Entertainment                                          :entertainment:
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40blessedesports&format=Atom][BLES (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40shitposthumanism&format=Html][Free Open Source Posthumanism (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40zavalil_opredeleniya&format=Atom][неуютный фкнчик (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40nebudi&format=Atom][небуди (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40bles_freebies&format=Atom][BLES Freebies (Telegram)]]                                      :low:
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40physkek_original&format=Atom][Физкек (Telegram)]]
+**** Science                                                      :science:
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40selfmadeLibrary&format=Atom][какая-то библиотека (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40anthropologhetto&format=Atom][Антрополог на районе (Telegram)]]                           :not_int:
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40lib_os&format=Atom][Библиотека для открытой науки (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40theversia&format=Atom][Versia (Telegram)]]
+**** News                                                            :news:
+***** DNU                                                            :dnu:
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40dnu_info&format=Atom][ДНУ імені Олеся Гончара (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40DNU_OFFICIAL&format=Atom][Пресслужба Ради Студентів ДНУ (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40sciadnu&format=Atom][Student committee of international affairs of DNU (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40dnu_sc&format=Atom][Науковий комітет ДНУ (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40DNU_EOM_123&format=Atom][ДНУ ім. Олеся Гончара, кафедра ЕОМ (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40niketasfm&format=Atom][Радиорубка Лихачёва (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40mustreads&format=Atom][Мастриды (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40mustwatch&format=Atom][Маствотч (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40sloboganska&format=Atom][Слобожанське]]
+**** Misc
+***** Photography                                                  :photo:
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40shafrow&format=Atom][Шафров (Telegram)]]
+****** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40gostevp&format=Atom][Гостев (Telegram)]]
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40bastionnormisov&format=Atom][Бастион нормисов (Telegram)]]                               :not_int:
+***** [[https://rss-bridge.org/bridge01/?action=display&bridge=TelegramBridge&username=%40NePovRil&format=Atom][НЕ ПOВ, А РІЛ (Telegram)]]                                      :low:

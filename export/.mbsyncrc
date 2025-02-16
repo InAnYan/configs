@@ -1,7 +1,8 @@
 IMAPAccount gmail
 Host imap.gmail.com
 User ruslanpopov1512@gmail.com
-PassCmd "cat ~/.gmail_password"
+AuthMechs XOAUTH2
+PassCmd "oama access ruslanpopov1512@gmail.com"
 TLSType IMAPS
 CertificateFile /etc/ssl/certs/ca-certificates.crt
 

@@ -1,0 +1,67 @@
+#+TITLE: =sync-rpi5.sh= =systemd= service
+
+* Description
+
+User =systemd= service that calls =sync-rpi5.sh= script every hour.
+
+* Code
+
+** Service
+
+*** Unit
+
+#+begin_src conf :tangle ./export/sync-rpi5.service
+
+  [Unit]
+  Description=Sync data to rpi5
+  After=network.target
+
+#+end_src
+
+*** Serivce
+
+#+begin_src conf :tangle ./export/sync-rpi5.service
+
+  [Service]
+  Type=simple
+  ExecStart=sh /mnt/data/projects/configs/export/sync-rpi5.sh
+
+#+end_src
+
+*** Install
+
+#+begin_src conf :tangle ./export/sync-rpi5.service
+
+  [Install]
+  WantedBy=multi-user.target
+
+#+end_src
+
+** Timer
+
+*** Unit
+
+#+begin_src conf :tangle ./export/sync-rpi5.timer
+
+  [Unit]
+  Description=Sync data to rpi5 every hour
+
+#+end_src
+
+*** Timer
+
+#+begin_src conf :tangle ./export/sync-rpi5.timer
+
+  [Timer]
+  OnCalendar=hourly
+
+#+end_src
+
+*** Install
+
+#+begin_src conf :tangle ./export/sync-rpi5.timer
+
+  [Install]
+  WantedBy=timers.target
+
+#+end_src

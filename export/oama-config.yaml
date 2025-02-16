@@ -1,0 +1,14 @@
+encryption:
+  tag: GPG
+  contents: D9AC348B149C23A29D2B5D1DB05455753D19811F
+
+services:
+
+  google:
+    # Yeah, I took them from: https://github.com/mozilla/releases-comm-central/blob/396b5ad3c98fcce79949a31e7b7902a0f861bf8d/mailnews/base/src/OAuth2Providers.sys.mjs#L127C10-L127C82.
+    client_id: 406964657835-aq8lmia8j95dhl1a2bvharmfk3t1hgqj
+    client_secret: kSmqreRr0qwBWJgbf5Y-PjSU
+
+  microsoft:
+    client_id: 08162f7c-0fd2-4200-a84a-f25a4db0b584
+    client_secret: TxRBilcHdC6WGBee]fs?QR:SJ8nI[g82

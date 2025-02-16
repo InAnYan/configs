@@ -1,0 +1,10 @@
+[Unit]
+Description=Sync data to rpi5
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=sh /mnt/data/projects/configs/export/sync-rpi5.sh
+
+[Install]
+WantedBy=multi-user.target

@@ -1,30 +1,15 @@
-;; [[file:../emacs-init.org::*Personal directories][Personal directories:1]]
+;; [[file:../emacs-init.org::*Personal constants][Personal constants:1]]
 (defconst BIBLIOGRAPHY_FILES
   '("/mnt/data/library/clean/lit.bib"))
 
 (defconst ORG_AGENDA_FILES
-  '("/mnt/data/projects/personal/private/quick/" "/mnt/data/projects/personal/private/calendars/"))
-
-(defconst QUICK_TODOS_FILE
-  "/mnt/data/projects/personal/private/quick/todos.org")
-
-(defconst QUICK_TASKS_FILE
-  "/mnt/data/projects/personal/private/quick/tasks.org")
-
-(defconst QUICK_THOUGHTS_FILE
-  "/mnt/data/projects/personal/private/quick/thoughts.org")
-
-(defconst QUICK_RESEARCH_IDEAS_FILE
-  "/mnt/data/projects/personal/private/quick/research-ideas.org")
-
-(defconst MAIN_CALENDAR_FILE
-  "/mnt/data/projects/personal/private/calendars/main.org")
+  '("/mnt/data/notes/calendar.org" "/mnt/data/notes/dump.org" "/mnt/data/notes/project-todos.org" "/mnt/data/notes/todos.org" "/mnt/data/notes/07_02_2025-university_2_kurs_2_semester.org"))
 
 (defconst PROJECTS_DIR
   "/mnt/data/projects")
 
 (defconst ORG_PROJECT_CAPTURE_FILE
-  "/mnt/data/projects/Project_Todos.org")
+  "/mnt/data/notes/project-todos.org")
 
 (defconst MBSYNC_CONFIG_FILE
   "/mnt/data/mail/.mbsyncrc")
@@ -43,7 +28,59 @@
 
 (defconst YAS_SNIPPET_DIR
   "/mnt/data/projects/yas-snippets")
-;; Personal directories:1 ends here
+
+(defconst MENTOR_HOME_DIR
+  "/mnt/data/torrents/internal-rtorrent")
+
+(defconst MENTOR_DOWNLOADS_DIR
+  "/mnt/data/torrents/download")
+
+(defconst MENTOR_EXTRA_CONF_FILE
+  "/mnt/data/projects/configs/export/rtorrent.rc")
+
+(defconst FEED_FILE
+  "/mnt/data/projects/configs/feeds.org")
+
+(defconst ORG_AUTOLOADS_DIR
+  "/mnt/data/projects/org-mode/lisp")
+
+(defconst ORG_ROAM_DIR
+  "/mnt/data/notes")
+
+(defconst ORG_FILES
+  '( :todos "/mnt/data/notes/todos.org"
+     :calendar "/mnt/data/notes/calendar.org"
+     :dump "/mnt/data/notes/dump.org"))
+
+;; Should be relative to =org-roam-directory= (which in my case is =ORG_ROAM_DIR=).
+(defconst ORG_ROAM_DAILIES_DIR
+  "journals/")
+
+(defconst ORG_ATTACHMENTS_DIR
+  "/mnt/data/notes/assets/")
+
+(defconst DATE_FORMAT
+  "%d.%m.%Y")
+
+(defconst DATE_FORMAT_FOR_SAVE
+  "%d_%m_%Y")
+
+(defconst TIME_FORMAT
+  "%H:%M")
+
+(defconst TIME_FORMAT_FOR_SAVE
+  "%H_%M")
+
+(defconst DATE_TIME_FORMAT
+  (concat DATE_FORMAT " " TIME_FORMAT))
+
+(defconst DATE_TIME_FORMAT_FOR_SAVE
+  (concat DATE_FORMAT_FOR_SAVE " " TIME_FORMAT_FOR_SAVE))
+;; Personal constants:1 ends here
+
+;; [[file:../emacs-init.org::*Additional: my signing key][Additional: my signing key:1]]
+(setq mml-secure-openpgp-signers '("E48F78214714E2801A0499D82AADAC169FBAD443"))
+;; Additional: my signing key:1 ends here
 
 ;; [[file:../emacs-init.org::*Global modes][Global modes:1]]
 (column-number-mode)
@@ -53,8 +90,14 @@
 (set-fringe-mode 10)        ; Give some breathing room ???.
 (menu-bar-mode -1)          ; Disable menu bar.
 (setq visible-bell t)       ; Do not beep.
+(recentf-mode t)            ; Store history of recent files.
+
+(global-auto-revert-mode 1) ; Watch files for changes.
+(setq global-auto-revert-non-file-buffers t) ; For, e.g., Dired.
 
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+
+(global-subword-mode)      ; Yes! Hop in Open|Ai|Embeddings like open_ai_embeddings.
 ;; Global modes:1 ends here
 
 ;; [[file:../emacs-init.org::*Main font][Main font:1]]
@@ -75,6 +118,7 @@
 (setq focus-follows-mouse t)
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ; Make ESC quit prompts
+(global-unset-key (kbd "C-z")) ; Little shit.
 ;; Miscalleneous commands:1 ends here
 
 ;; [[file:../emacs-init.org::*Easier window resizing][Easier window resizing:1]]
@@ -119,6 +163,22 @@
   (start-process-shell-command cmd nil cmd))
 ;; Utility functions:1 ends here
 
+;; [[file:../emacs-init.org::*Utility functions][Utility functions:2]]
+(defun get-string-from-file (filePath)
+  "Return file content as string."
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (buffer-string)))
+;; Utility functions:2 ends here
+
+;; [[file:../emacs-init.org::*Eshell][Eshell:1]]
+(defun iay/eshell-aliases ()
+  (interactive)
+  (shell-command "alias" "rm" "echo 'error: use `trash` instead of `rm`'"))
+
+(add-hook 'eshell-mode-hook 'iay/eshell-aliases)
+;; Eshell:1 ends here
+
 ;; [[file:../emacs-init.org::*=package=][=package=:1]]
 (require 'package)
 
@@ -131,6 +191,10 @@
 (unless package-archive-contents
   (package-refresh-contents))
 ;; =package=:1 ends here
+
+;; [[file:../emacs-init.org::*org autoload][org autoload:1]]
+(add-to-list 'load-path ORG_AUTOLOADS_DIR)
+;; org autoload:1 ends here
 
 ;; [[file:../emacs-init.org::*=use-package=][=use-package=:1]]
 (unless (package-installed-p 'use-package)
@@ -155,6 +219,25 @@
   :config
   (mood-line-mode))
 ;; Mode line:1 ends here
+
+;; [[file:../emacs-init.org::*Paddings][Paddings:1]]
+(use-package spacious-padding
+  :custom
+  (spacious-padding-widths
+   '( :internal-border-width 15
+      :header-line-width 4
+      :mode-line-width 6
+      :tab-width 4
+      :right-divider-width 30
+      :scroll-bar-width 8
+      :fringe-width 8))
+  (spacious-padding-subtle-mode-line
+   `( :mode-line-active 'default
+      :mode-line-inactive vertical-border))
+
+  :config
+  (spacious-padding-mode 1))
+;; Paddings:1 ends here
 
 ;; [[file:../emacs-init.org::*Rainbow delimiters][Rainbow delimiters:1]]
 (use-package rainbow-delimiters
@@ -209,7 +292,13 @@
 (setq doc-view-resolution 300)
 ;; =doc-view=:1 ends here
 
-;; [[file:../emacs-init.org::*Email][Email:2]]
+;; [[file:../emacs-init.org::*=pdf-tools=][=pdf-tools=:1]]
+(use-package pdf-tools
+  :config
+  (pdf-loader-install))
+;; =pdf-tools=:1 ends here
+
+;; [[file:../emacs-init.org::*Email][Email:1]]
 (use-package mu4e
   :ensure
   nil
@@ -227,7 +316,11 @@
   (mu4e-maildir MAIL_DIR)
   (mu4e-mu-home MU_HOME)
   (mu4e-compose-format-flowed t)
-  (message-send-mail-function 'smtpmail-send-it)
+  (message-send-mail-function 'message-send-mail-with-sendmail)
+  (sendmail-program "/usr/bin/msmtp")
+  (send-mail-function 'smtpmail-send-it)
+  (message-sendmail-f-is-evil t)
+  (message-sendmail-extra-arguments '("--read-envelope-from"))
 
   :config
   (require 'mu4e-org)
@@ -248,13 +341,7 @@
                   (mu4e-drafts-folder  . "/gmail/[Gmail]/Drafts")
                   (mu4e-sent-folder  . "/gmail/[Gmail]/Sent Mail")
                   (mu4e-refile-folder  . "/gmail/[Gmail]/All Mail")
-                  (mu4e-trash-folder  . "/gmail/[Gmail]/Trash")
-                  (starttls-use-gnutls . t)
-                  (smtpmail-starttls-credentials . '(("smtp.gmail.com" 587 nil nil)))
-                  (smtpmail-auth-credentials . ,(expand-file-name "~/.authinfo"))
-                  (smtpmail-default-smtp-server . "smtp.gmail.com")
-                  (smtpmail-smtp-server . "smtp.gmail.com")
-                  (smtpmail-smtp-service . 587)))
+                  (mu4e-trash-folder  . "/gmail/[Gmail]/Trash")))
          (make-mu4e-context
           :name
           "new-uni"
@@ -269,18 +356,35 @@
                   (mu4e-drafts-folder  . "/uni-new/Drafts")
                   (mu4e-sent-folder  . "/uni-new/Sent Items")
                   ;; (mu4e-refile-folder  . "/uni-new/inbox")
-                  (mu4e-trash-folder  . "/uni-new/Trash")
-                  (message-send-mail-function . sendmail-send-it)
-                  (sendmail-program . "/usr/bin/msmtp")
-                  (mail-specify-envelope-from . t)
-                  (message-sendmail-envelope-from . header)
-                  (mail-envelope-from . header))))))
-;; Email:2 ends here
+                  (mu4e-trash-folder  . "/uni-new/Trash")))
+         (make-mu4e-context
+          :name
+          "old-uni"
 
-;; [[file:../emacs-init.org::*Email][Email:3]]
+          :match-func
+          (lambda (msg)
+            (when msg
+              (string-prefix-p "/uni-old" (mu4e-message-field msg :maildir))))
+
+          :vars `((user-mail-address . "popov_ro@ffeks.dnu.edu.ua")
+                  (user-full-name    . "Ruslan Popov")
+                  (mu4e-drafts-folder  . "/uni-old/Drafts")
+                  (mu4e-sent-folder  . "/uni-old/Sent Items")
+                  ;; (mu4e-refile-folder  . "/uni-old/inbox")
+                  (mu4e-trash-folder  . "/uni-old/Trash"))))))
+;; Email:1 ends here
+
+;; [[file:../emacs-init.org::*Email][Email:2]]
 (with-eval-after-load "mm-decode"
   (add-to-list 'mm-discouraged-alternatives "text/html")
   (add-to-list 'mm-discouraged-alternatives "text/richtext"))
+;; Email:2 ends here
+
+;; [[file:../emacs-init.org::*Email][Email:3]]
+(use-package mu4e-alert
+  :config
+  (mu4e-alert-set-default-style 'notifications)
+  (add-hook 'after-init-hook #'mu4e-alert-enable-notifications))
 ;; Email:3 ends here
 
 ;; [[file:../emacs-init.org::*Telegram][Telegram:1]]
@@ -292,6 +396,35 @@
   (define-key global-map (kbd "C-c t") telega-prefix-map)
   (telega-notifications-mode 1))
 ;; Telegram:1 ends here
+
+;; [[file:../emacs-init.org::*RSS/Atom][RSS/Atom:1]]
+(use-package elfeed
+  :bind
+  ("C-x f" . elfeed)
+
+  :custom
+  (elfeed-search-filter "@6-months-ago")
+  (elfeed-search-date-format `(,DATE_TIME_FORMAT 13 :left)))
+;; RSS/Atom:1 ends here
+
+;; [[file:../emacs-init.org::*RSS/Atom][RSS/Atom:3]]
+(use-package elfeed-org
+  :custom
+  (rmh-elfeed-org-files (list FEED_FILE))
+
+  :config
+  (elfeed-org))
+;; RSS/Atom:3 ends here
+
+;; [[file:../emacs-init.org::*Torrent][Torrent:1]]
+(use-package transmission)
+;; Torrent:1 ends here
+
+;; [[file:../emacs-init.org::*Copy/pasting][Copy/pasting:1]]
+(use-package xclip
+  :config
+  (xclip-mode 1))
+;; Copy/pasting:1 ends here
 
 ;; [[file:../emacs-init.org::*=ivy=][=ivy=:1]]
 (use-package ivy
@@ -340,6 +473,27 @@
   :config
   (counsel-mode))
 ;; =counsel=:1 ends here
+
+;; [[file:../emacs-init.org::*=prescient=][=prescient=:1]]
+(use-package ivy-prescient
+  :after
+  counsel
+
+  ;; :custom
+  ;; (prescient-sort-length-enable nil)
+
+  :config
+  (ivy-prescient-mode 1))
+
+(use-package company-prescient
+  :after
+  company
+
+  :config
+  (company-prescient-mode 1))
+
+(prescient-persist-mode 1)
+;; =prescient=:1 ends here
 
 ;; [[file:../emacs-init.org::*=swiper=][=swiper=:1]]
 (use-package swiper
@@ -458,6 +612,7 @@
   :hook
   (org-mode . org-indent-mode)
   (org-mode . visual-line-mode)
+  (org-babel-after-execute . org-link-preview-refresh)
 
   :bind
   ("C-c c" . org-capture)
@@ -465,7 +620,9 @@
   ("C-c l" . org-store-link)
 
   :custom
+  (org-attach-id-dir ORG_ATTACHMENTS_DIR)
   (org-ellipsis " ▾")
+  (org-startup-with-inline-images t)
   (org-todo-keywords '((sequence "TODO" "DOING" "|" "DONE" "NOTP")))
   (org-log-done t)
   (org-agenda-files ORG_AGENDA_FILES)
@@ -483,25 +640,24 @@
 
 (setq
  org-capture-templates
- (doct '((:group "Quick"
-                 :type entry
-                 :template "* TODO %?\n%U\n%a\n%i\n"
-                 :empty-lines 1
-                 :children (("TODO" :keys "t"
-                             :headline "Active"
-                             :file QUICK_TODOS_FILE)
-                            ("Task" :keys "a"
-                             :headline "Active"
-                             :file QUICK_TASKS_FILE)
-                            ("Calendar" :keys "c"
-                             :headline "Active"
-                             :file MAIN_CALENDAR_FILE)
-                            ("Thought" :keys "h"
-                             :headline "Active"
-                             :file QUICK_THOUGHTS_FILE)
-                            ("Research idea" :keys "r"
-                             :headline "Active"
-                             :file QUICK_RESEARCH_IDEAS_FILE))))))
+ (doct `(( "TODO" :keys "t"
+  	 :type entry
+  	 :template "* TODO %?\n%U\n%a\n%i\n"
+      	 :headline "Active"
+      	 :empty-lines 1
+  	 :file ,(plist-get ORG_FILES :todos))
+       ( "Calendar entry" :keys "c"
+  	 :type entry
+  	 :template "* TODO %?\n%U\n%a\n%i\n"
+      	 :headline "Active"
+      	 :empty-lines 1
+  	 :file ,(plist-get ORG_FILES :calendar))
+       ( "Dump" :keys "d"
+  	 :type entry
+  	 :template "* %?\n%U\n%a\n%i\n"
+      	 :headline "Active"
+      	 :empty-lines 1
+  	 :file ,(plist-get ORG_FILES :dump)))))
 ;; =doct= and captures:1 ends here
 
 ;; [[file:../emacs-init.org::*=org-babel=][=org-babel=:1]]
@@ -541,11 +697,41 @@
 
 ;; [[file:../emacs-init.org::*=org-mime=][=org-mime=:1]]
 (use-package org-mime
-  :hook
-  (message-send . org-mime-htmlize)
+  ;; :hook
+  ;; (message-send . org-mime-htmlize)
   :custom
   (org-mime-export-options '(:section-numbers nil :with-author nil :with-toc nil)))
 ;; =org-mime=:1 ends here
+
+;; [[file:../emacs-init.org::*=org-roam=][=org-roam=:1]]
+(use-package org-roam
+  :custom
+  (org-roam-directory ORG_ROAM_DIR)
+  (org-roam-completion-everywhere t)
+
+  (org-roam-dailies-capture-templates
+   `(("d" "default" entry "* %?" :target
+      (file+head ,(concat "%<" DATE_FORMAT_FOR_SAVE ">.org") ,(concat "#+TITLE: Journal for " DATE_FORMAT "\n\n")))))
+
+  (org-roam-dailies-directory ORG_ROAM_DAILIES_DIR)
+
+  (org-roam-capture-templates
+   `(("d" "default" plain "%?" :target
+      (file+head ,(concat "%<" DATE_FORMAT_FOR_SAVE ">-${slug}.org") "#+TITLE: ${title}\n\n")
+      :unnarrowed t)))
+
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+       ("C-c n f" . org-roam-node-find)
+       ("C-c n i" . org-roam-node-insert)
+       :map org-mode-map
+       ("C-M-i"    . completion-at-point))
+  :config
+  (org-roam-setup))
+;; =org-roam=:1 ends here
+
+;; [[file:../emacs-init.org::*=org-notifications=][=org-notifications=:1]]
+(use-package org-notifications)
+;; =org-notifications=:1 ends here
 
 ;; [[file:../emacs-init.org::*GPTel][GPTel:1]]
 (use-package gptel)
@@ -576,7 +762,7 @@
   (text-mode . yas-minor-mode)
 
   :custom
-  (yas-snippet-dir YAS_SNIPPET_DIR)
+  (yas-snippet-dirs (list YAS_SNIPPET_DIR))
 
   :config
   (yas-reload-all))
@@ -651,28 +837,34 @@
 
 ;; [[file:../emacs-init.org::*Rust][Rust:1]]
 (use-package rustic
-  :ensure
-  :bind (:map rustic-mode-map
-              ("M-j" . lsp-ui-imenu)
-              ("M-?" . lsp-find-references)
-              ("C-c C-c l" . flycheck-list-errors)
-              ("C-c C-c a" . lsp-execute-code-action)
-              ("C-c C-c r" . lsp-rename)
-              ("C-c C-c q" . lsp-workspace-restart)
-              ("C-c C-c Q" . lsp-workspace-shutdown)
-              ("C-c C-c s" . lsp-rust-analyzer-status))
-  :config
-  ;; uncomment for less flashiness
-  ;; (setq lsp-eldoc-hook nil)
-  ;; (setq lsp-enable-symbol-highlighting nil)
-  ;; (setq lsp-signature-auto-activate nil)
+  :bind
+  (:map rustic-mode-map
+        ("M-j" . lsp-ui-imenu)
+        ("M-?" . lsp-find-references)
+        ("C-c C-c l" . flycheck-list-errors)
+        ("C-c C-c a" . lsp-execute-code-action)
+        ("C-c C-c r" . lsp-rename)
+        ("C-c C-c q" . lsp-workspace-restart)
+        ("C-c C-c Q" . lsp-workspace-shutdown)
+        ("C-c C-c s" . lsp-rust-analyzer-status))
 
-  (setq rustic-format-on-save t))
+  :custom
+  (rustic-rustfmt-config-alist '((edition . "2021")))
+
+  (lsp-eldoc-hook nil)
+  (lsp-enable-symbol-highlighting nil)
+  (lsp-signature-auto-activate nil)
+
+  (rustic-format-on-save t))
 ;; Rust:1 ends here
 
 ;; [[file:../emacs-init.org::*YAML][YAML:1]]
 (use-package yaml)
 ;; YAML:1 ends here
+
+;; [[file:../emacs-init.org::*Python][Python:1]]
+(use-package pyvenv)
+;; Python:1 ends here
 
 ;; [[file:../emacs-init.org::*Miscalleneous packages][Miscalleneous packages:1]]
 ;; Log commands you typed.
@@ -701,6 +893,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
-(put 'dired-find-alternate-file 'disabled nil)
 ;; Post-amble:2 ends here

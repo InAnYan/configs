@@ -1,0 +1,25 @@
+#+TITLE: Git global config
+#+PROPERTY: header-args:conf :tangle ./export/gitconfig
+
+* Code
+
+#+begin_src conf
+
+  [user]
+  email = ruslanpopov1512@gmail.com
+  name = InAnYan
+  signingkey = E48F78214714E2801A0499D82AADAC169FBAD443
+
+  [init]
+  defaultBranch = main
+
+  [core]
+  autocrlf = input
+
+  [commit]
+  gpgSign = true
+
+  [tag]
+  gpgSign = true
+
+#+end_src

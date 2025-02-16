@@ -29,6 +29,20 @@ UPDATE 2: =davmail= is not what I thought...
 
 #+end_src
 
+** Gmail
+
+#+begin_src conf
+
+  account      gmail
+  from 	   ruslanpopov1512@gmail.com
+  user 	   ruslanpopov1512@gmail.com
+  auth         xoauth2
+  passwordeval oama access ruslanpopov1512@gmail.com
+  host         smtp.gmail.com
+  port         587
+
+#+end_src
+
 ** New university email
 
 #+begin_src conf
@@ -38,6 +52,20 @@ UPDATE 2: =davmail= is not what I thought...
   user popov_r@365.dnu.edu.ua
   auth xoauth2
   passwordeval oama access popov_r@365.dnu.edu.ua
+  host smtp.office365.com
+  port 587
+
+#+end_src
+
+** Old university email
+
+#+begin_src conf
+
+  account popov_ro@ffeks.dnu.edu.ua
+  from popov_ro@ffeks.dnu.edu.ua
+  user popov_ro@ffeks.dnu.edu.ua
+  auth xoauth2
+  passwordeval oama access popov_ro@ffeks.dnu.edu.ua
   host smtp.office365.com
   port 587
 

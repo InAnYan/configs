@@ -1,0 +1,8 @@
+[Unit]
+Description=Sync data to rpi5 every hour
+
+[Timer]
+OnCalendar=hourly
+
+[Install]
+WantedBy=timers.target

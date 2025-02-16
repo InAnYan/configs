@@ -1,0 +1,24 @@
+#+TITLE: Clone dirs script with =rclone= to =rpi5=
+#+PROPERTY: header-args:sh :tangle ./export/sync-rpi5.sh	
+
+* Description
+
+Sync dirs with =rclone= to =rpi5=. Should be in =crontab=.
+
+* Code
+
+** Notes
+
+#+begin_src sh
+
+  /usr/bin/rclone sync -v --create-empty-src-dirs /mnt/data/notes rpi5:notes
+
+#+end_src
+
+** Library
+
+#+begin_src sh
+
+  /usr/bin/rclone sync -v --create-empty-src-dirs /mnt/data/library rpi5:library
+
+#+end_src

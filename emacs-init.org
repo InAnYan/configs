@@ -1,3 +1,4 @@
+
 #+TITLE: Emacs main =init.el= file
 #+PROPERTY: header-args:emacs-lisp :tangle ./export/emacs-init.el :comments yes
 
@@ -33,58 +34,99 @@ Instead of:
 
 As latter style is harder to edit. In first style, it's easy to move elements, add or remove, as first and last element use the same syntax as middle elements.
 
-* Personal directories
+* Personal constants
 
 Interesting, turns out you still can mutate a variable defined with ~defconst~, so it seems to be just a marker.
 
-There I will collect variables that contain my personal directories. So that if anyone else would like to use my config, then it could change those paths easily.
+There I will collect variables that contain my personal directories and other constants. So that if anyone else would like to use my config, then it could change those values easily. 
 
 #+begin_src emacs-lisp
 
-  (defconst BIBLIOGRAPHY_FILES
-    '("/mnt/data/library/clean/lit.bib"))
+    (defconst BIBLIOGRAPHY_FILES
+      '("/mnt/data/library/clean/lit.bib"))
 
-  (defconst ORG_AGENDA_FILES
-    '("/mnt/data/projects/personal/private/quick/" "/mnt/data/projects/personal/private/calendars/"))
+    (defconst ORG_AGENDA_FILES
+      '("/mnt/data/notes/calendar.org" "/mnt/data/notes/dump.org" "/mnt/data/notes/project-todos.org" "/mnt/data/notes/todos.org" "/mnt/data/notes/07_02_2025-university_2_kurs_2_semester.org"))
 
-  (defconst QUICK_TODOS_FILE
-    "/mnt/data/projects/personal/private/quick/todos.org")
+    (defconst PROJECTS_DIR
+      "/mnt/data/projects")
 
-  (defconst QUICK_TASKS_FILE
-    "/mnt/data/projects/personal/private/quick/tasks.org")
+    (defconst ORG_PROJECT_CAPTURE_FILE
+      "/mnt/data/notes/project-todos.org")
 
-  (defconst QUICK_THOUGHTS_FILE
-    "/mnt/data/projects/personal/private/quick/thoughts.org")
+    (defconst MBSYNC_CONFIG_FILE
+      "/mnt/data/mail/.mbsyncrc")
 
-  (defconst QUICK_RESEARCH_IDEAS_FILE
-    "/mnt/data/projects/personal/private/quick/research-ideas.org")
+    (defconst MAIL_DIR
+      "/mnt/data/mail/")
 
-  (defconst MAIN_CALENDAR_FILE
-    "/mnt/data/projects/personal/private/calendars/main.org")
+    (defconst MU_HOME
+      "/mnt/data/mail/.muhome")
 
-  (defconst PROJECTS_DIR
-    "/mnt/data/projects")
+    (defconst MU4E_LOAD_PATH
+      "/usr/shar/emacs/site-lisp/mu4e")
 
-  (defconst ORG_PROJECT_CAPTURE_FILE
-    "/mnt/data/projects/Project_Todos.org")
+    (defconst SAVES_DIR
+      "/mnt/data/misc/file-saves")
 
-  (defconst MBSYNC_CONFIG_FILE
-    "/mnt/data/mail/.mbsyncrc")
+    (defconst YAS_SNIPPET_DIR
+      "/mnt/data/projects/yas-snippets")
 
-  (defconst MAIL_DIR
-    "/mnt/data/mail/")
+    (defconst MENTOR_HOME_DIR
+      "/mnt/data/torrents/internal-rtorrent")
 
-  (defconst MU_HOME
-    "/mnt/data/mail/.muhome")
+    (defconst MENTOR_DOWNLOADS_DIR
+      "/mnt/data/torrents/download")
 
-  (defconst MU4E_LOAD_PATH
-    "/usr/shar/emacs/site-lisp/mu4e")
+    (defconst MENTOR_EXTRA_CONF_FILE
+      "/mnt/data/projects/configs/export/rtorrent.rc")
 
-  (defconst SAVES_DIR
-    "/mnt/data/misc/file-saves")
+    (defconst FEED_FILE
+      "/mnt/data/projects/configs/feeds.org")
 
-  (defconst YAS_SNIPPET_DIR
-    "/mnt/data/projects/yas-snippets")
+    (defconst ORG_AUTOLOADS_DIR
+      "/mnt/data/projects/org-mode/lisp")
+
+    (defconst ORG_ROAM_DIR
+      "/mnt/data/notes")
+
+    (defconst ORG_FILES
+      '( :todos "/mnt/data/notes/todos.org"
+         :calendar "/mnt/data/notes/calendar.org"
+         :dump "/mnt/data/notes/dump.org"))
+
+    ;; Should be relative to =org-roam-directory= (which in my case is =ORG_ROAM_DIR=).
+    (defconst ORG_ROAM_DAILIES_DIR
+      "journals/")
+
+    (defconst ORG_ATTACHMENTS_DIR
+      "/mnt/data/notes/assets/")
+
+    (defconst DATE_FORMAT
+      "%d.%m.%Y")
+
+    (defconst DATE_FORMAT_FOR_SAVE
+      "%d_%m_%Y")
+
+    (defconst TIME_FORMAT
+      "%H:%M")
+
+    (defconst TIME_FORMAT_FOR_SAVE
+      "%H_%M")
+
+    (defconst DATE_TIME_FORMAT
+      (concat DATE_FORMAT " " TIME_FORMAT))
+
+    (defconst DATE_TIME_FORMAT_FOR_SAVE
+      (concat DATE_FORMAT_FOR_SAVE " " TIME_FORMAT_FOR_SAVE))
+
+#+end_src
+
+** Additional: my signing key
+
+#+begin_src emacs-lisp
+
+  (setq mml-secure-openpgp-signers '("E48F78214714E2801A0499D82AADAC169FBAD443"))
 
 #+end_src
 
@@ -103,8 +145,14 @@ Next code does not rely on any external packages.
   (set-fringe-mode 10)        ; Give some breathing room ???.
   (menu-bar-mode -1)          ; Disable menu bar.
   (setq visible-bell t)       ; Do not beep.
+  (recentf-mode t)            ; Store history of recent files.
+
+  (global-auto-revert-mode 1) ; Watch files for changes.
+  (setq global-auto-revert-non-file-buffers t) ; For, e.g., Dired.
 
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+
+  (global-subword-mode)      ; Yes! Hop in Open|Ai|Embeddings like open_ai_embeddings.
 
 #+end_src
 
@@ -135,6 +183,7 @@ Next code does not rely on any external packages.
   (setq focus-follows-mouse t)
 
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ; Make ESC quit prompts
+  (global-unset-key (kbd "C-z")) ; Little shit.
 
 #+end_src
 
@@ -206,7 +255,31 @@ Taken from: [[https://stackoverflow.com/a/151946]].
 
 #+end_src
 
+Next function is taken from: [[http://xahlee.info/emacs/emacs/elisp_read_file_content.html]].
+
+#+begin_src emacs-lisp
+
+  (defun get-string-from-file (filePath)
+    "Return file content as string."
+    (with-temp-buffer
+      (insert-file-contents filePath)
+      (buffer-string)))
+
+#+end_src
+
 * Packages and modes
+
+** Eshell
+
+#+begin_src emacs-lisp
+
+  (defun iay/eshell-aliases ()
+    (interactive)
+    (shell-command "alias" "rm" "echo 'error: use `trash` instead of `rm`'"))
+
+  (add-hook 'eshell-mode-hook 'iay/eshell-aliases)
+
+#+end_src
 
 ** Set up packages
 
@@ -224,6 +297,14 @@ Taken from: [[https://stackoverflow.com/a/151946]].
 
   (unless package-archive-contents
     (package-refresh-contents))
+
+#+end_src
+
+*** org autoload
+
+#+begin_src emacs-lisp
+
+  (add-to-list 'load-path ORG_AUTOLOADS_DIR)
 
 #+end_src
 
@@ -264,6 +345,48 @@ I like =mood-line= , because it has an easy example on how to construct the mode
 
     :config
     (mood-line-mode))
+
+#+end_src
+
+Currently, EXWM hides header-line.
+
+#+begin_src emacs-lisp :tangle no
+
+  (setq-default header-line-format mode-line-format)
+  (setq-default mode-line-format nil)
+
+#+end_src
+
+*** Paddings
+
+#+begin_src emacs-lisp
+
+  (use-package spacious-padding
+    :custom
+    (spacious-padding-widths
+     '( :internal-border-width 15
+        :header-line-width 4
+        :mode-line-width 6
+        :tab-width 4
+        :right-divider-width 30
+        :scroll-bar-width 8
+        :fringe-width 8))
+    (spacious-padding-subtle-mode-line
+     `( :mode-line-active 'default
+        :mode-line-inactive vertical-border))
+
+    :config
+    (spacious-padding-mode 1))
+
+#+end_src
+
+*** Minibuffer :unused:
+
+#+begin_src emacs-lisp :tangle no
+
+  (use-package mini-frame
+    :config
+    (mini-frame-mode 1))
 
 #+end_src
 
@@ -352,7 +475,9 @@ Several terminals. Taken from: [[https://www.emacswiki.org/emacs/MultiTerm]].
 
 #+end_src
 
-*** =doc-view=
+*** Reading documents
+
+**** =doc-view=
 
 #+begin_src emacs-lisp
 
@@ -360,36 +485,19 @@ Several terminals. Taken from: [[https://www.emacswiki.org/emacs/MultiTerm]].
 
 #+end_src
 
+**** =pdf-tools=
+
+#+begin_src emacs-lisp
+
+  (use-package pdf-tools
+    :config
+    (pdf-loader-install))
+
+#+end_src
+
 *** Social
 
 **** Email
-
-Next snippet tries to add support for Oauth authentication for Microsoft emails, taken from: [[https://www.macs.hw.ac.uk/~rs46/posts/2022-01-11-mu4e-oauth.html]].
-
-#+begin_src emacs-lisp :tangle no
-
-  (require 'smtpmail)
-
-   ;;; Call the oauth2ms program to fetch the authentication token
-  (defun fetch-access-token ()
-    (with-temp-buffer
-      (call-process "oama" nil t nil "access popov_r@365.dnu.edu.ua")
-      (buffer-string)))
-
-  ;;; Add new authentication method for xoauth2
-  (cl-defmethod smtpmail-try-auth-method
-    (process (_mech (eql 'xoauth2)) user password)
-    (let* ((access-token (fetch-access-token)))
-      (smtpmail-command-or-throw
-       process
-       (concat "AUTH XOAUTH2 " access-token)
-       235)))
-
-  ;;; Register the method
-  (with-eval-after-load 'smtpmail
-    (add-to-list 'smtpmail-auth-supported 'xoauth2))
-
-#+end_src
 
 Taken a lot from:
 
@@ -415,7 +523,11 @@ Taken a lot from:
     (mu4e-maildir MAIL_DIR)
     (mu4e-mu-home MU_HOME)
     (mu4e-compose-format-flowed t)
-    (message-send-mail-function 'smtpmail-send-it)
+    (message-send-mail-function 'message-send-mail-with-sendmail)
+    (sendmail-program "/usr/bin/msmtp")
+    (send-mail-function 'smtpmail-send-it)
+    (message-sendmail-f-is-evil t)
+    (message-sendmail-extra-arguments '("--read-envelope-from"))
 
     :config
     (require 'mu4e-org)
@@ -436,13 +548,7 @@ Taken a lot from:
                     (mu4e-drafts-folder  . "/gmail/[Gmail]/Drafts")
                     (mu4e-sent-folder  . "/gmail/[Gmail]/Sent Mail")
                     (mu4e-refile-folder  . "/gmail/[Gmail]/All Mail")
-                    (mu4e-trash-folder  . "/gmail/[Gmail]/Trash")
-                    (starttls-use-gnutls . t)
-                    (smtpmail-starttls-credentials . '(("smtp.gmail.com" 587 nil nil)))
-                    (smtpmail-auth-credentials . ,(expand-file-name "~/.authinfo"))
-                    (smtpmail-default-smtp-server . "smtp.gmail.com")
-                    (smtpmail-smtp-server . "smtp.gmail.com")
-                    (smtpmail-smtp-service . 587)))
+                    (mu4e-trash-folder  . "/gmail/[Gmail]/Trash")))
            (make-mu4e-context
             :name
             "new-uni"
@@ -457,12 +563,22 @@ Taken a lot from:
                     (mu4e-drafts-folder  . "/uni-new/Drafts")
                     (mu4e-sent-folder  . "/uni-new/Sent Items")
                     ;; (mu4e-refile-folder  . "/uni-new/inbox")
-                    (mu4e-trash-folder  . "/uni-new/Trash")
-                    (message-send-mail-function . sendmail-send-it)
-                    (sendmail-program . "/usr/bin/msmtp")
-                    (mail-specify-envelope-from . t)
-                    (message-sendmail-envelope-from . header)
-                    (mail-envelope-from . header))))))
+                    (mu4e-trash-folder  . "/uni-new/Trash")))
+           (make-mu4e-context
+            :name
+            "old-uni"
+
+            :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/uni-old" (mu4e-message-field msg :maildir))))
+
+            :vars `((user-mail-address . "popov_ro@ffeks.dnu.edu.ua")
+                    (user-full-name    . "Ruslan Popov")
+                    (mu4e-drafts-folder  . "/uni-old/Drafts")
+                    (mu4e-sent-folder  . "/uni-old/Sent Items")
+                    ;; (mu4e-refile-folder  . "/uni-old/inbox")
+                    (mu4e-trash-folder  . "/uni-old/Trash"))))))
 
 #+end_src
 
@@ -473,6 +589,15 @@ Next snippet of code, taken from [[https://l2dy.github.io/notes/Emacs/mu4e/Prefe
   (with-eval-after-load "mm-decode"
     (add-to-list 'mm-discouraged-alternatives "text/html")
     (add-to-list 'mm-discouraged-alternatives "text/richtext"))
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+  (use-package mu4e-alert
+    :config
+    (mu4e-alert-set-default-style 'notifications)
+    (add-hook 'after-init-hook #'mu4e-alert-enable-notifications))
 
 #+end_src
 
@@ -487,6 +612,71 @@ Next snippet of code, taken from [[https://l2dy.github.io/notes/Emacs/mu4e/Prefe
     :config
     (define-key global-map (kbd "C-c t") telega-prefix-map)
     (telega-notifications-mode 1))
+
+#+end_src
+
+**** RSS/Atom
+
+#+begin_src emacs-lisp
+
+  (use-package elfeed
+    :bind
+    ("C-x f" . elfeed)
+
+    :custom
+    (elfeed-search-filter "@6-months-ago")
+    (elfeed-search-date-format `(,DATE_TIME_FORMAT 13 :left)))
+
+#+end_src
+
+I don't really liked that one.
+    
+#+begin_src emacs-lisp :tangle no
+
+  (use-package elfeed-goodies
+    :config
+    (elfeed-goodies/setup))
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+  (use-package elfeed-org
+    :custom
+    (rmh-elfeed-org-files (list FEED_FILE))
+
+    :config
+    (elfeed-org))
+
+#+end_src
+
+*** Torrent
+
+#+begin_src emacs-lisp
+
+  (use-package transmission)
+
+#+end_src
+
+Old:
+
+#+begin_src emacs-lisp :tangle no
+
+  (use-package mentor
+    :custom
+    (mentor-home-dir MENTOR_HOME_DIR)
+    (mentor-rtorrent-extra-conf (get-string-from-file MENTOR_EXTRA_CONF_FILE))
+    (mentor-rtorrent-download-directory MENTOR_DOWNLOADS_DIR))
+
+#+end_src
+
+*** Copy/pasting
+
+#+begin_src emacs-lisp
+
+  (use-package xclip
+    :config
+    (xclip-mode 1))
 
 #+end_src
 
@@ -557,6 +747,33 @@ Basic config taken from: [[https://github.com/Yevgnen/ivy-rich?tab=readme-ov-fil
 
     :config
     (counsel-mode))
+
+#+end_src
+
+*** =prescient=
+
+As said in [[https://www.youtube.com/watch?v=T9kygXveEz0]], it should be loaded after =counsel=.
+
+#+begin_src emacs-lisp
+
+  (use-package ivy-prescient
+    :after
+    counsel
+
+    ;; :custom
+    ;; (prescient-sort-length-enable nil)
+
+    :config
+    (ivy-prescient-mode 1))
+
+  (use-package company-prescient
+    :after
+    company
+
+    :config
+    (company-prescient-mode 1))
+
+  (prescient-persist-mode 1)
 
 #+end_src
 
@@ -735,6 +952,7 @@ The setup of ORG mode is taken a lot from these resources:
     :hook
     (org-mode . org-indent-mode)
     (org-mode . visual-line-mode)
+    (org-babel-after-execute . org-link-preview-refresh)
 
     :bind
     ("C-c c" . org-capture)
@@ -742,7 +960,9 @@ The setup of ORG mode is taken a lot from these resources:
     ("C-c l" . org-store-link)
 
     :custom
+    (org-attach-id-dir ORG_ATTACHMENTS_DIR)
     (org-ellipsis " ▾")
+    (org-startup-with-inline-images t)
     (org-todo-keywords '((sequence "TODO" "DOING" "|" "DONE" "NOTP")))
     (org-log-done t)
     (org-agenda-files ORG_AGENDA_FILES)
@@ -768,26 +988,24 @@ Full Org configuration is presented in section Org.
 
   (setq
    org-capture-templates
-   (doct '((:group "Quick"
-                   :type entry
-                   :template "* TODO %?\n%U\n%a\n%i\n"
-                   :empty-lines 1
-                   :children (("TODO" :keys "t"
-                               :headline "Active"
-                               :file QUICK_TODOS_FILE)
-                              ("Task" :keys "a"
-                               :headline "Active"
-                               :file QUICK_TASKS_FILE)
-                              ("Calendar" :keys "c"
-                               :headline "Active"
-                               :file MAIN_CALENDAR_FILE)
-                              ("Thought" :keys "h"
-                               :headline "Active"
-                               :file QUICK_THOUGHTS_FILE)
-                              ("Research idea" :keys "r"
-                               :headline "Active"
-                               :file QUICK_RESEARCH_IDEAS_FILE))))))
-
+   (doct `(( "TODO" :keys "t"
+  	   :type entry
+  	   :template "* TODO %?\n%U\n%a\n%i\n"
+      	   :headline "Active"
+      	   :empty-lines 1
+  	   :file ,(plist-get ORG_FILES :todos))
+  	 ( "Calendar entry" :keys "c"
+  	   :type entry
+  	   :template "* TODO %?\n%U\n%a\n%i\n"
+      	   :headline "Active"
+      	   :empty-lines 1
+  	   :file ,(plist-get ORG_FILES :calendar))
+  	 ( "Dump" :keys "d"
+  	   :type entry
+  	   :template "* %?\n%U\n%a\n%i\n"
+      	   :headline "Active"
+      	   :empty-lines 1
+  	   :file ,(plist-get ORG_FILES :dump)))))
 
 #+end_src
 
@@ -855,10 +1073,48 @@ Automatically tangle files on save. Well, I'm not sure if a whole package is nee
 #+begin_src emacs-lisp
 
   (use-package org-mime
-    :hook
-    (message-send . org-mime-htmlize)
+    ;; :hook
+    ;; (message-send . org-mime-htmlize)
     :custom
     (org-mime-export-options '(:section-numbers nil :with-author nil :with-toc nil)))
+
+#+end_src
+
+*** =org-roam=
+
+#+begin_src emacs-lisp
+
+  (use-package org-roam
+    :custom
+    (org-roam-directory ORG_ROAM_DIR)
+    (org-roam-completion-everywhere t)
+
+    (org-roam-dailies-capture-templates
+     `(("d" "default" entry "* %?" :target
+        (file+head ,(concat "%<" DATE_FORMAT_FOR_SAVE ">.org") ,(concat "#+TITLE: Journal for " DATE_FORMAT "\n\n")))))
+
+    (org-roam-dailies-directory ORG_ROAM_DAILIES_DIR)
+
+    (org-roam-capture-templates
+     `(("d" "default" plain "%?" :target
+        (file+head ,(concat "%<" DATE_FORMAT_FOR_SAVE ">-${slug}.org") "#+TITLE: ${title}\n\n")
+        :unnarrowed t)))
+    
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+      	 ("C-c n f" . org-roam-node-find)
+      	 ("C-c n i" . org-roam-node-insert)
+      	 :map org-mode-map
+      	 ("C-M-i"    . completion-at-point))
+    :config
+    (org-roam-setup))
+
+#+end_src
+
+*** =org-notifications=
+
+#+begin_src emacs-lisp
+
+  (use-package org-notifications)
 
 #+end_src
 
@@ -908,7 +1164,7 @@ Automatically tangle files on save. Well, I'm not sure if a whole package is nee
     (text-mode . yas-minor-mode)
 
     :custom
-    (yas-snippet-dir YAS_SNIPPET_DIR)
+    (yas-snippet-dirs (list YAS_SNIPPET_DIR))
 
     :config
     (yas-reload-all))
@@ -1009,23 +1265,25 @@ Taken a lot from:
 #+begin_src emacs-lisp
 
   (use-package rustic
-    :ensure
-    :bind (:map rustic-mode-map
-                ("M-j" . lsp-ui-imenu)
-                ("M-?" . lsp-find-references)
-                ("C-c C-c l" . flycheck-list-errors)
-                ("C-c C-c a" . lsp-execute-code-action)
-                ("C-c C-c r" . lsp-rename)
-                ("C-c C-c q" . lsp-workspace-restart)
-                ("C-c C-c Q" . lsp-workspace-shutdown)
-                ("C-c C-c s" . lsp-rust-analyzer-status))
-    :config
-    ;; uncomment for less flashiness
-    ;; (setq lsp-eldoc-hook nil)
-    ;; (setq lsp-enable-symbol-highlighting nil)
-    ;; (setq lsp-signature-auto-activate nil)
+    :bind
+    (:map rustic-mode-map
+          ("M-j" . lsp-ui-imenu)
+          ("M-?" . lsp-find-references)
+          ("C-c C-c l" . flycheck-list-errors)
+          ("C-c C-c a" . lsp-execute-code-action)
+          ("C-c C-c r" . lsp-rename)
+          ("C-c C-c q" . lsp-workspace-restart)
+          ("C-c C-c Q" . lsp-workspace-shutdown)
+          ("C-c C-c s" . lsp-rust-analyzer-status))
+    
+    :custom
+    (rustic-rustfmt-config-alist '((edition . "2021")))
+    
+    (lsp-eldoc-hook nil)
+    (lsp-enable-symbol-highlighting nil)
+    (lsp-signature-auto-activate nil)
 
-    (setq rustic-format-on-save t))
+    (rustic-format-on-save t))
 
 #+end_src
 
@@ -1034,6 +1292,14 @@ Taken a lot from:
 #+begin_src emacs-lisp
 
   (use-package yaml)
+
+#+end_src
+
+**** Python
+
+#+begin_src emacs-lisp
+
+  (use-package pyvenv)
 
 #+end_src
 
@@ -1073,7 +1339,5 @@ Taken a lot from:
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
    )
-
-  (put 'dired-find-alternate-file 'disabled nil)
 
 #+end_src

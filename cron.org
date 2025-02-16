@@ -1,0 +1,16 @@
+#+TITLE: =cron= jobs
+#+PROPERTY: header-args:crontab :tangle ./export/cron
+
+* Description
+
+Mostly for =rclone= to =rpi5=.
+
+* Code
+
+** =rclone=
+
+#+begin_src crontab
+
+  0 * * * * /mnt/data/projects/configs/export/sync-rpi5.sh
+
+#+end_src
