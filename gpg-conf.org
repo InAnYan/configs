@@ -1,0 +1,11 @@
+#+TITLE: =gpg= config
+#+PROPERTY: header-args:conf :tangle ./export/gpg.conf
+
+* Code
+
+#+begin_src conf
+
+  use-agent
+  pinentry-mode loopback
+
+#+end_src

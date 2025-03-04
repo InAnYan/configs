@@ -7,6 +7,8 @@
 
   # sh /mnt/data/projects/configs/export/lemonbar.sh | lemonbar -p &
 
+  eval $(ssh_agent)
+
   picom &
 
   polybar -c /mnt/data/projects/configs/export/polybar-netbook-config.ini &
