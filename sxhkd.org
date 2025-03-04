@@ -1,0 +1,246 @@
+#+TITLE: =sxhdk= config
+#+PROPERTY: header-args:conf :tangle ./export/sxhkdrc
+
+* Code
+
+** Programs
+
+#+begin_src conf
+
+  # Run menu.
+  super + Return
+	mlterm
+
+  # Run terminal.
+  super + @space
+	dmenu_run
+
+  # Take screenshot of a part of a screen.
+  Print
+	flameshot gui
+
+  # Take screenshot of a full screen.
+  Shift + Print
+	flameshot full
+
+#+end_src
+
+** =bspwm=
+
+*** Management
+
+#+begin_src conf
+
+  # Quit.
+  super + alt + q
+	bspc quit
+
+  # Restart.
+  super + alt + r
+	bspc wm -r
+
+#+end_src
+
+*** Program management
+
+#+begin_src conf
+
+  # Close program.
+  super + w
+	bspc node -c
+
+  # Kill program.
+  super + shift + w
+	bspc node -k
+
+#+end_src
+
+*** Modes
+
+#+begin_src conf
+
+  # Alternate between the tiled and monocle layout.
+  super + m
+	bspc desktop -l next
+
+  # Send the newest marked node to the newest preselected node.
+  super + y
+	bspc node newest.marked.local -n newest.!automatic.local
+
+#+end_src
+
+*** State
+
+#+begin_src conf
+
+  # Originally: t, shift + t, s, f.
+
+  # Set the window state to tiled.
+  super + t
+	bspc node -t tiled
+
+  # Set the window state to pseudo tiled.
+  super + shift + t
+	bspc node -t pseudo_tiled
+
+  # Set the window state to floating.
+  super + shift + f
+	bspc node -t floating
+
+  # Set the window state to full-screen.
+  super + s
+	bspc node -t fullscreen
+
+#+end_src
+
+*** Flags
+
+#+begin_src conf
+
+  # Originally: m, x, y, z.
+
+  # Set the node flags to marked.
+  super + ctrl + m
+	bspc node -g marked
+
+  # Set the node flags to locked.
+  lockedn + ctrl + l
+	bspc node -g locked
+
+  # Set the node flags to sticky.
+  super + ctrl + s
+	bspc node -g sticky
+
+  # Set the node flags to private.
+  super + ctrl + p
+	bspc node -g private
+
+#+end_src
+
+*** Focus
+
+#+begin_src conf
+
+  # Originally: h, j, k, l.
+
+  # Focus the node in the given direction.
+  super + n
+	bspc node -f south
+
+  # Focus the node in the given direction.
+  super + p
+	bspc node -f north
+
+  # Focus the node in the given direction.
+  super + b
+	bspc node -f west
+
+  # Focus the node in the given direction.
+  super + f
+	bspc node -f east
+
+#+end_src
+
+By next (like =C-x o=):
+
+#+begin_src conf
+
+  # Originally: c.
+
+  # Focus the next window in the current desktop.
+  super + o
+	bspc node -f next.local.!hidden.window
+
+  # Focus the previous window in the current desktop.
+  super + shift + o
+	bspc node -b next.local.!hidden.window
+
+#+end_src
+
+*** Floating windows
+
+**** Resize
+
+#+begin_src conf
+
+  # expand a window by moving one of its side outward
+  super + alt + {b,n,p,f}
+	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+
+  # contract a window by moving one of its side inward
+  super + alt + shift + {b,n,p,f}
+	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+
+#+end_src
+
+**** Move
+
+#+begin_src conf
+
+  # move a floating window
+  super + {h,j,k,l}
+	bspc node -v {-20 0,0 20,0 -20,20 0}
+
+#+end_src
+
+*** Preselection
+
+#+begin_src conf
+
+  # preselect the direction
+  super + ctrl + {b,n,p,f}
+	bspc node -p {west,south,north,east}
+
+  # preselect the ratio
+  super + ctrl + {1-9}
+	bspc node -o 0.{1-9}
+
+  # cancel the preselection for the focused node
+  super + ctrl + space
+	bspc node -p cancel
+
+  # cancel the preselection for the focused desktop
+  super + ctrl + shift + space
+	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+
+#+end_src
+
+*** Desktops
+
+**** Switch
+
+#+begin_src conf
+
+  super + {1-8}
+	bspc desktop --focus ^{1-8}
+
+#+end_src
+
+**** Move
+
+#+begin_src conf
+
+  super + shift + {1-8}
+	bspc node --to-desktop ^{1-8}
+
+#+end_src
+
+*** Misc
+
+#+begin_src conf
+
+  # swap the current node and the biggest window
+  super + g
+	bspc node -s biggest.window  
+
+#+end_src
+
+** Misc
+
+#+begin_src conf
+
+  # Restart =sxhkd=.
+  super + Escape
+	pkill -USR1 -x sxhkd
+
+#+end_src

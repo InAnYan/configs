@@ -1,0 +1,7 @@
+scrollbar_mode = none
+mod_meta_mode = esc
+bel_mode = visual
+blink_cursor = true
+fg_color = #ffffffffffff
+bg_color = #000000000000
+tabsize = 4

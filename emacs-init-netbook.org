@@ -1,0 +1,68 @@
+#+TITLE: Emacs main =init.el= file for netbook
+#+PROPERTY: header-args:emacs-lisp :tangle ./export/emacs-init-netbook.el :comments yes
+
+* Personal constants
+
+#+begin_src emacs-lisp
+
+  (defconst SAVES_DIR
+    "/mnt/data/misc/file-saves")
+
+#+end_src
+
+* Global Emacs configuration
+
+Next code does not rely on any external packages.
+ 
+** Global modes
+
+#+begin_src emacs-lisp
+
+  (column-number-mode)
+  (scroll-bar-mode -1)        ; Disable visible scrollbar.
+  (tool-bar-mode -1)          ; Disable the toolbar.
+  (tooltip-mode -1)           ; Disable tooltips.
+  (set-fringe-mode 10)        ; Give some breathing room ???.
+  (menu-bar-mode -1)          ; Disable menu bar.
+  (setq visible-bell t)       ; Do not beep.
+  (recentf-mode t)            ; Store history of recent files.
+
+  (global-auto-revert-mode 1) ; Watch files for changes.
+  (setq global-auto-revert-non-file-buffers t) ; For, e.g., Dired.
+
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+
+  (global-subword-mode)      ; Yes! Hop in Open|Ai|Embeddings like open_ai_embeddings.
+
+#+end_src
+
+** Main font                                                       :noexport:
+
+#+begin_src emacs-lisp
+
+  (set-face-attribute
+   'default
+   nil
+   :font "JetBrains Mono"
+   :height 98
+   :weight 'regular
+   :slant 'normal
+   :width 'normal)
+
+#+end_src
+
+** Backups
+
+Taken from: [[https://stackoverflow.com/a/151946]].
+
+#+begin_src emacs-lisp
+
+  (setq backup-directory-alist `(("." . ,SAVES_DIR)))
+  (setq backup-by-copying t)
+
+  (setq delete-old-versions t
+        kept-new-versions 6
+        kept-old-versions 2
+        version-control t)
+
+#+end_src

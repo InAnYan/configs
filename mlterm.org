@@ -1,0 +1,34 @@
+#+TITLE: =mlterm= configuration
+
+* Description
+
+=mlterm= is a terminal emulator.
+
+Configuration is split into several files.
+
+* Code
+
+** Main configuration
+
+#+begin_src conf :tangle ./export/mlterm/main
+
+  scrollbar_mode = none
+  mod_meta_mode = esc
+  bel_mode = visual
+  blink_cursor = true
+  fg_color = #ffffffffffff
+  bg_color = #000000000000
+  tabsize = 4
+
+#+end_src
+
+** Font
+
+#+begin_src conf :tangle ./export/mlterm/aafont
+
+DEFAULT = JetBrains Mono 12
+
+#+end_src
+
+
+
