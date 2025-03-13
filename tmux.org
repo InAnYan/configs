@@ -1,0 +1,52 @@
+#+TITLE: =tmux= config
+#+PROPERTY: header-args:conf :tangle ./export/tmux.conf
+
+* Code
+
+** Use =M-t= as prefix
+
+#+begin_src conf
+
+  unbind C-b
+  set-option -g prefix M-t
+  bind-key M-t send-prefix
+
+#+end_src
+
+** Better splitting commands
+
+#+begin_src conf
+
+  bind | split-window -h
+  bind - split-window -v
+  unbind '"'
+  unbind '%'
+
+#+end_src
+
+** Status bar
+
+*** Right
+
+#+begin_src conf
+
+  set -g status-right "C#(sh /mnt/data/projects/configs/cpu_usage.sh)% M#(sh /mnt/data/projects/configs/mem_usage.sh)% B#(cat /sys/class/power_supply/BAT0/capacity)% %d.%m.%Y %H:%M"
+
+#+end_src
+
+** Reload config
+
+#+begin_src conf
+
+  bind r source-file ~/.tmux.conf
+
+#+end_src
+
+** Misc
+
+#+begin_src conf
+
+  set -g mouse on
+  set -g status-interval 2
+
+#+end_src

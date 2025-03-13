@@ -1,0 +1,10 @@
+#+TITLE: Start X server
+#+PROPERTY: header-args:sh :tangle ./export/xinitrc
+
+* Code
+
+#+begin_src sh
+
+  exec bspwm
+
+#+end_src
