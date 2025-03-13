@@ -42,83 +42,83 @@ There I will collect variables that contain my personal directories and other co
 
 #+begin_src emacs-lisp
 
-    (defconst BIBLIOGRAPHY_FILES
-      '("/mnt/data/library/clean/lit.bib"))
+  (defconst BIBLIOGRAPHY_FILES
+    '("/mnt/data/library/clean/lit.bib"))
 
-    (defconst ORG_AGENDA_FILES
-      '("/mnt/data/notes/calendar.org" "/mnt/data/notes/dump.org" "/mnt/data/notes/project-todos.org" "/mnt/data/notes/todos.org" "/mnt/data/notes/07_02_2025-university_2_kurs_2_semester.org"))
+  (defconst ORG_AGENDA_FILES
+    '("/mnt/data/notes/calendar.org" "/mnt/data/notes/dump.org" "/mnt/data/notes/project-todos.org" "/mnt/data/notes/todos.org" "/mnt/data/notes/07_02_2025-university_2_kurs_2_semester.org"))
 
-    (defconst PROJECTS_DIR
-      "/mnt/data/projects")
+  (defconst PROJECTS_DIR
+    "/mnt/data/projects")
 
-    (defconst ORG_PROJECT_CAPTURE_FILE
-      "/mnt/data/notes/project-todos.org")
+  (defconst ORG_PROJECT_CAPTURE_FILE
+    "/mnt/data/notes/project-todos.org")
 
-    (defconst MBSYNC_CONFIG_FILE
-      "/mnt/data/mail/.mbsyncrc")
+  (defconst MBSYNC_CONFIG_FILE
+    "/mnt/data/mail/.mbsyncrc")
 
-    (defconst MAIL_DIR
-      "/mnt/data/mail/")
+  (defconst MAIL_DIR
+    "/mnt/data/mail/")
 
-    (defconst MU_HOME
-      "/mnt/data/mail/.muhome")
+  (defconst MU_HOME
+    "/mnt/data/mail/.muhome")
 
-    (defconst MU4E_LOAD_PATH
-      "/usr/shar/emacs/site-lisp/mu4e")
+  (defconst MU4E_LOAD_PATH
+    "/usr/shar/emacs/site-lisp/mu4e")
 
-    (defconst SAVES_DIR
-      "/mnt/data/misc/file-saves")
+  (defconst SAVES_DIR
+    "/mnt/data/misc/file-saves")
 
-    (defconst YAS_SNIPPET_DIR
-      "/mnt/data/projects/yas-snippets")
+  (defconst YAS_SNIPPET_DIR
+    "/mnt/data/projects/yas-snippets-2")
 
-    (defconst MENTOR_HOME_DIR
-      "/mnt/data/torrents/internal-rtorrent")
+  (defconst MENTOR_HOME_DIR
+    "/mnt/data/torrents/internal-rtorrent")
 
-    (defconst MENTOR_DOWNLOADS_DIR
-      "/mnt/data/torrents/download")
+  (defconst MENTOR_DOWNLOADS_DIR
+    "/mnt/data/torrents/download")
 
-    (defconst MENTOR_EXTRA_CONF_FILE
-      "/mnt/data/projects/configs/export/rtorrent.rc")
+  (defconst MENTOR_EXTRA_CONF_FILE
+    "/mnt/data/projects/configs/export/rtorrent.rc")
 
-    (defconst FEED_FILE
-      "/mnt/data/projects/configs/feeds.org")
+  (defconst FEED_FILE
+    "/mnt/data/projects/configs/feeds.org")
 
-    (defconst ORG_AUTOLOADS_DIR
-      "/mnt/data/projects/org-mode/lisp")
+  (defconst ORG_AUTOLOADS_DIR
+    "/mnt/data/projects/org-mode/lisp")
 
-    (defconst ORG_ROAM_DIR
-      "/mnt/data/notes")
+  (defconst ORG_ROAM_DIR
+    "/mnt/data/notes")
 
-    (defconst ORG_FILES
-      '( :todos "/mnt/data/notes/todos.org"
-         :calendar "/mnt/data/notes/calendar.org"
-         :dump "/mnt/data/notes/dump.org"))
+  (defconst ORG_FILES
+    '( :todos "/mnt/data/notes/todos.org"
+       :calendar "/mnt/data/notes/calendar.org"
+       :dump "/mnt/data/notes/dump.org"))
 
-    ;; Should be relative to =org-roam-directory= (which in my case is =ORG_ROAM_DIR=).
-    (defconst ORG_ROAM_DAILIES_DIR
-      "journals/")
+  ;; Should be relative to =org-roam-directory= (which in my case is =ORG_ROAM_DIR=).
+  (defconst ORG_ROAM_DAILIES_DIR
+    "journals/")
 
-    (defconst ORG_ATTACHMENTS_DIR
-      "/mnt/data/notes/assets/")
+  (defconst ORG_ATTACHMENTS_DIR
+    "/mnt/data/notes/assets/")
 
-    (defconst DATE_FORMAT
-      "%d.%m.%Y")
+  (defconst DATE_FORMAT
+    "%d.%m.%Y")
 
-    (defconst DATE_FORMAT_FOR_SAVE
-      "%d_%m_%Y")
+  (defconst DATE_FORMAT_FOR_SAVE
+    "%d_%m_%Y")
 
-    (defconst TIME_FORMAT
-      "%H:%M")
+  (defconst TIME_FORMAT
+    "%H:%M")
 
-    (defconst TIME_FORMAT_FOR_SAVE
-      "%H_%M")
+  (defconst TIME_FORMAT_FOR_SAVE
+    "%H_%M")
 
-    (defconst DATE_TIME_FORMAT
-      (concat DATE_FORMAT " " TIME_FORMAT))
+  (defconst DATE_TIME_FORMAT
+    (concat DATE_FORMAT " " TIME_FORMAT))
 
-    (defconst DATE_TIME_FORMAT_FOR_SAVE
-      (concat DATE_FORMAT_FOR_SAVE " " TIME_FORMAT_FOR_SAVE))
+  (defconst DATE_TIME_FORMAT_FOR_SAVE
+    (concat DATE_FORMAT_FOR_SAVE " " TIME_FORMAT_FOR_SAVE))
 
 #+end_src
 
@@ -184,6 +184,10 @@ Next code does not rely on any external packages.
 
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ; Make ESC quit prompts
   (global-unset-key (kbd "C-z")) ; Little shit.
+
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 2)
+  (setq indent-line-function 'insert-tab)
 
 #+end_src
 
@@ -283,9 +287,9 @@ Next function is taken from: [[http://xahlee.info/emacs/emacs/elisp_read_file_co
 
 ** Set up packages
 
-*** =package=
+*** =package=                                                    :noexport:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
   (require 'package)
 
@@ -300,7 +304,7 @@ Next function is taken from: [[http://xahlee.info/emacs/emacs/elisp_read_file_co
 
 #+end_src
 
-*** org autoload
+*** Autoload
 
 #+begin_src emacs-lisp
 
@@ -308,7 +312,32 @@ Next function is taken from: [[http://xahlee.info/emacs/emacs/elisp_read_file_co
 
 #+end_src
 
-*** =use-package=
+*** =straight=
+
+#+begin_src emacs-lisp
+
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name
+          "straight/repos/straight.el/bootstrap.el"
+          (or (bound-and-true-p straight-base-dir)
+              user-emacs-directory)))
+        (bootstrap-version 7))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+
+  (straight-use-package 'use-package)
+  (setq-default straight-use-package-by-default t)
+
+#+end_src
+
+*** =use-package=                                                :noexport:
 
 #+begin_src emacs-lisp
 
@@ -357,9 +386,9 @@ Currently, EXWM hides header-line.
 
 #+end_src
 
-*** Paddings
+*** Paddings                                                     :noexport:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
   (use-package spacious-padding
     :custom
@@ -497,14 +526,14 @@ Several terminals. Taken from: [[https://www.emacswiki.org/emacs/MultiTerm]].
 
 *** Social
 
-**** Email
+**** Email                                                      :noexport:
 
 Taken a lot from:
 
 - [[https://www.youtube.com/watch?v=yZRyEhi4y44&list=PLEoMzSkcN8oM-kA19xOQc8s0gr0PpFGJQ&index=4]].
 - [[https://www.youtube.com/watch?v=olXpfaSnf0o&list=PLEoMzSkcN8oM-kA19xOQc8s0gr0PpFGJQ&index=5]].
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
   (use-package mu4e
     :ensure
@@ -724,7 +753,7 @@ Basic config taken from: [[https://github.com/Yevgnen/ivy-rich?tab=readme-ov-fil
     :config
     (ivy-rich-mode))
 
-  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
+  ; (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
 
 #+end_src
 
@@ -754,7 +783,7 @@ Basic config taken from: [[https://github.com/Yevgnen/ivy-rich?tab=readme-ov-fil
 
 As said in [[https://www.youtube.com/watch?v=T9kygXveEz0]], it should be loaded after =counsel=.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
   (use-package ivy-prescient
     :after
@@ -1209,7 +1238,7 @@ Automatically tangle files on save. Well, I'm not sure if a whole package is nee
     (lsp-ui-sideline-show-hover t)
     (lsp-ui-doc-enable nil))
 
-#+end_src
+    #+end_src
 
 *** Projectile
 
@@ -1301,6 +1330,30 @@ Taken a lot from:
 
   (use-package pyvenv)
 
+  (use-package lsp-pyright
+    :hook
+    (python . lsp-mode))
+
+#+end_src
+
+**** TypeScript
+
+#+begin_src emacs-lisp
+
+  (use-package typescript-mode
+    :bind
+    (:map typescript-mode-map
+          ("M-j" . lsp-ui-imenu)
+          ("M-?" . lsp-find-references)
+          ("C-c C-c l" . flycheck-list-errors)
+          ("C-c C-c a" . lsp-execute-code-action)
+          ("C-c C-c r" . lsp-rename)
+          ("C-c C-c q" . lsp-workspace-restart)
+          ("C-c C-c Q" . lsp-workspace-shutdown)
+          ("C-c C-c s" . lsp-rust-analyzer-status)) ; Yeah, I know.
+    :hook
+    (typescript-mode . lsp))
+
 #+end_src
 
 ** Miscalleneous packages
@@ -1308,7 +1361,10 @@ Taken a lot from:
 #+begin_src emacs-lisp
 
   ;; Log commands you typed.
-  (use-package command-log-mode) 
+  (use-package command-log-mode)
+
+  (use-package typst-ts-mode
+    :straight (:type git :host codeberg :repo "meow_king/typst-ts-mode"))
 
 #+end_src
 

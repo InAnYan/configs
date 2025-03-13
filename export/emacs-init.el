@@ -27,7 +27,7 @@
   "/mnt/data/misc/file-saves")
 
 (defconst YAS_SNIPPET_DIR
-  "/mnt/data/projects/yas-snippets")
+  "/mnt/data/projects/yas-snippets-2")
 
 (defconst MENTOR_HOME_DIR
   "/mnt/data/torrents/internal-rtorrent")
@@ -119,6 +119,10 @@
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ; Make ESC quit prompts
 (global-unset-key (kbd "C-z")) ; Little shit.
+
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
+(setq indent-line-function 'insert-tab)
 ;; Miscalleneous commands:1 ends here
 
 ;; [[file:../emacs-init.org::*Easier window resizing][Easier window resizing:1]]
@@ -179,22 +183,30 @@
 (add-hook 'eshell-mode-hook 'iay/eshell-aliases)
 ;; Eshell:1 ends here
 
-;; [[file:../emacs-init.org::*=package=][=package=:1]]
-(require 'package)
-
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")))
-
-(package-initialize)
-
-(unless package-archive-contents
-  (package-refresh-contents))
-;; =package=:1 ends here
-
-;; [[file:../emacs-init.org::*org autoload][org autoload:1]]
+;; [[file:../emacs-init.org::*Autoload][Autoload:1]]
 (add-to-list 'load-path ORG_AUTOLOADS_DIR)
-;; org autoload:1 ends here
+;; Autoload:1 ends here
+
+;; [[file:../emacs-init.org::*=straight=][=straight=:1]]
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+(setq-default straight-use-package-by-default t)
+;; =straight=:1 ends here
 
 ;; [[file:../emacs-init.org::*=use-package=][=use-package=:1]]
 (unless (package-installed-p 'use-package)
@@ -219,25 +231,6 @@
   :config
   (mood-line-mode))
 ;; Mode line:1 ends here
-
-;; [[file:../emacs-init.org::*Paddings][Paddings:1]]
-(use-package spacious-padding
-  :custom
-  (spacious-padding-widths
-   '( :internal-border-width 15
-      :header-line-width 4
-      :mode-line-width 6
-      :tab-width 4
-      :right-divider-width 30
-      :scroll-bar-width 8
-      :fringe-width 8))
-  (spacious-padding-subtle-mode-line
-   `( :mode-line-active 'default
-      :mode-line-inactive vertical-border))
-
-  :config
-  (spacious-padding-mode 1))
-;; Paddings:1 ends here
 
 ;; [[file:../emacs-init.org::*Rainbow delimiters][Rainbow delimiters:1]]
 (use-package rainbow-delimiters
@@ -297,82 +290,6 @@
   :config
   (pdf-loader-install))
 ;; =pdf-tools=:1 ends here
-
-;; [[file:../emacs-init.org::*Email][Email:1]]
-(use-package mu4e
-  :ensure
-  nil
-
-  ;; :defer
-  ;; 20
-
-  :load-path
-  MU4E_LOAD_PATH
-
-  :custom
-  (mu4e-change-filenames-when-moving t)
-  (mu4e-update-interval (* 5 60)) ; Every 5 minutes.
-  (mu4e-get-mail-command (format "mbsync -a --config %s" MBSYNC_CONFIG_FILE))
-  (mu4e-maildir MAIL_DIR)
-  (mu4e-mu-home MU_HOME)
-  (mu4e-compose-format-flowed t)
-  (message-send-mail-function 'message-send-mail-with-sendmail)
-  (sendmail-program "/usr/bin/msmtp")
-  (send-mail-function 'smtpmail-send-it)
-  (message-sendmail-f-is-evil t)
-  (message-sendmail-extra-arguments '("--read-envelope-from"))
-
-  :config
-  (require 'mu4e-org)
-  (mu4e t)
-  (setq mu4e-contexts
-        (list
-         (make-mu4e-context
-          :name
-          "gmail"
-
-          :match-func
-          (lambda (msg)
-            (when msg
-              (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
-
-          :vars `((user-mail-address . "ruslanpopov1512@gmail.com")
-                  (user-full-name    . "Ruslan Popov")
-                  (mu4e-drafts-folder  . "/gmail/[Gmail]/Drafts")
-                  (mu4e-sent-folder  . "/gmail/[Gmail]/Sent Mail")
-                  (mu4e-refile-folder  . "/gmail/[Gmail]/All Mail")
-                  (mu4e-trash-folder  . "/gmail/[Gmail]/Trash")))
-         (make-mu4e-context
-          :name
-          "new-uni"
-
-          :match-func
-          (lambda (msg)
-            (when msg
-              (string-prefix-p "/uni-new" (mu4e-message-field msg :maildir))))
-
-          :vars `((user-mail-address . "popov_r@365.dnu.edu.ua")
-                  (user-full-name    . "Ruslan Popov")
-                  (mu4e-drafts-folder  . "/uni-new/Drafts")
-                  (mu4e-sent-folder  . "/uni-new/Sent Items")
-                  ;; (mu4e-refile-folder  . "/uni-new/inbox")
-                  (mu4e-trash-folder  . "/uni-new/Trash")))
-         (make-mu4e-context
-          :name
-          "old-uni"
-
-          :match-func
-          (lambda (msg)
-            (when msg
-              (string-prefix-p "/uni-old" (mu4e-message-field msg :maildir))))
-
-          :vars `((user-mail-address . "popov_ro@ffeks.dnu.edu.ua")
-                  (user-full-name    . "Ruslan Popov")
-                  (mu4e-drafts-folder  . "/uni-old/Drafts")
-                  (mu4e-sent-folder  . "/uni-old/Sent Items")
-                  ;; (mu4e-refile-folder  . "/uni-old/inbox")
-                  (mu4e-trash-folder  . "/uni-old/Trash"))))))
-;; Email:1 ends here
 
 ;; [[file:../emacs-init.org::*Email][Email:2]]
 (with-eval-after-load "mm-decode"
@@ -455,7 +372,7 @@
   :config
   (ivy-rich-mode))
 
-(setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
+; (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
 ;; =ivy-rich=:1 ends here
 
 ;; [[file:../emacs-init.org::*=counsel=][=counsel=:1]]
@@ -473,27 +390,6 @@
   :config
   (counsel-mode))
 ;; =counsel=:1 ends here
-
-;; [[file:../emacs-init.org::*=prescient=][=prescient=:1]]
-(use-package ivy-prescient
-  :after
-  counsel
-
-  ;; :custom
-  ;; (prescient-sort-length-enable nil)
-
-  :config
-  (ivy-prescient-mode 1))
-
-(use-package company-prescient
-  :after
-  company
-
-  :config
-  (company-prescient-mode 1))
-
-(prescient-persist-mode 1)
-;; =prescient=:1 ends here
 
 ;; [[file:../emacs-init.org::*=swiper=][=swiper=:1]]
 (use-package swiper
@@ -641,23 +537,23 @@
 (setq
  org-capture-templates
  (doct `(( "TODO" :keys "t"
-  	 :type entry
-  	 :template "* TODO %?\n%U\n%a\n%i\n"
-      	 :headline "Active"
-      	 :empty-lines 1
-  	 :file ,(plist-get ORG_FILES :todos))
-       ( "Calendar entry" :keys "c"
-  	 :type entry
-  	 :template "* TODO %?\n%U\n%a\n%i\n"
-      	 :headline "Active"
-      	 :empty-lines 1
-  	 :file ,(plist-get ORG_FILES :calendar))
-       ( "Dump" :keys "d"
-  	 :type entry
-  	 :template "* %?\n%U\n%a\n%i\n"
-      	 :headline "Active"
-      	 :empty-lines 1
-  	 :file ,(plist-get ORG_FILES :dump)))))
+	   :type entry
+	   :template "* TODO %?\n%U\n%a\n%i\n"
+    	   :headline "Active"
+    	   :empty-lines 1
+	   :file ,(plist-get ORG_FILES :todos))
+	 ( "Calendar entry" :keys "c"
+	   :type entry
+	   :template "* TODO %?\n%U\n%a\n%i\n"
+    	   :headline "Active"
+    	   :empty-lines 1
+	   :file ,(plist-get ORG_FILES :calendar))
+	 ( "Dump" :keys "d"
+	   :type entry
+	   :template "* %?\n%U\n%a\n%i\n"
+    	   :headline "Active"
+    	   :empty-lines 1
+	   :file ,(plist-get ORG_FILES :dump)))))
 ;; =doct= and captures:1 ends here
 
 ;; [[file:../emacs-init.org::*=org-babel=][=org-babel=:1]]
@@ -719,12 +615,12 @@
    `(("d" "default" plain "%?" :target
       (file+head ,(concat "%<" DATE_FORMAT_FOR_SAVE ">-${slug}.org") "#+TITLE: ${title}\n\n")
       :unnarrowed t)))
-
+  
   :bind (("C-c n l" . org-roam-buffer-toggle)
-       ("C-c n f" . org-roam-node-find)
-       ("C-c n i" . org-roam-node-insert)
-       :map org-mode-map
-       ("C-M-i"    . completion-at-point))
+    	 ("C-c n f" . org-roam-node-find)
+    	 ("C-c n i" . org-roam-node-insert)
+    	 :map org-mode-map
+    	 ("C-M-i"    . completion-at-point))
   :config
   (org-roam-setup))
 ;; =org-roam=:1 ends here
@@ -847,10 +743,10 @@
         ("C-c C-c q" . lsp-workspace-restart)
         ("C-c C-c Q" . lsp-workspace-shutdown)
         ("C-c C-c s" . lsp-rust-analyzer-status))
-
+  
   :custom
   (rustic-rustfmt-config-alist '((edition . "2021")))
-
+  
   (lsp-eldoc-hook nil)
   (lsp-enable-symbol-highlighting nil)
   (lsp-signature-auto-activate nil)
@@ -864,11 +760,34 @@
 
 ;; [[file:../emacs-init.org::*Python][Python:1]]
 (use-package pyvenv)
+
+(use-package lsp-pyright
+  :hook
+  (python . lsp-mode))
 ;; Python:1 ends here
+
+;; [[file:../emacs-init.org::*TypeScript][TypeScript:1]]
+(use-package typescript-mode
+  :bind
+  (:map typescript-mode-map
+        ("M-j" . lsp-ui-imenu)
+        ("M-?" . lsp-find-references)
+        ("C-c C-c l" . flycheck-list-errors)
+        ("C-c C-c a" . lsp-execute-code-action)
+        ("C-c C-c r" . lsp-rename)
+        ("C-c C-c q" . lsp-workspace-restart)
+        ("C-c C-c Q" . lsp-workspace-shutdown)
+        ("C-c C-c s" . lsp-rust-analyzer-status)) ; Yeah, I know.
+  :hook
+  (typescript-mode . lsp))
+;; TypeScript:1 ends here
 
 ;; [[file:../emacs-init.org::*Miscalleneous packages][Miscalleneous packages:1]]
 ;; Log commands you typed.
 (use-package command-log-mode)
+
+(use-package typst-ts-mode
+  :straight (:type git :host codeberg :repo "meow_king/typst-ts-mode"))
 ;; Miscalleneous packages:1 ends here
 
 ;; [[file:../emacs-init.org::*Post-amble][Post-amble:1]]
