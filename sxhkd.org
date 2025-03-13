@@ -7,23 +7,47 @@
 
 #+begin_src conf
 
-  # Run menu.
-  super + Return
-	mlterm
-
   # Run terminal.
+  super + Return
+  	mlterm
+
+  # Run Emacs.
+  super + e
+        emacsclient --create-frame
+
+  # Open menu for running programs.
   super + @space
-	dmenu_run
+        rofi -show run
+
+  # Open menu for opened windows.
+  super + Shift + @space
+        rofi -show window
 
   # Take screenshot of a part of a screen.
   Print
-	flameshot gui
+  	flameshot gui
 
   # Take screenshot of a full screen.
   Shift + Print
-	flameshot full
+  	flameshot full
 
 #+end_src
+
+** Layout switching
+
+#+begin_src conf
+
+  super + alt + e
+        setxkbmap us
+
+  super + alt + u
+        setxkbmap ua
+
+  super + alt + r
+        setxkbmap ru
+
+#+end_src
+  
 
 ** =bspwm=
 
@@ -36,7 +60,7 @@
 	bspc quit
 
   # Restart.
-  super + alt + r
+  super + alt + shift + r
 	bspc wm -r
 
 #+end_src

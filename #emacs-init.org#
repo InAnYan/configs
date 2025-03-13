@@ -1,0 +1,1342 @@
+#+TITLE: Emacs main =init.el= file
+#+PROPERTY: header-args:emacs-lisp :tangle ./export/emacs-init.el :comments yes
+
+* Description
+
+This =init.el= file is the first and main (for me) configuration file for Emacs. It contains all options that I will use both in Emacs editor and my Emacs deskop environment. For my Emacs Desktop Environment set up, see [[./emacs-desktop.org]].
+
+I will also often mention various sources, where I took some lines from.
+
+Overall, I extensively used materials from System Crafters ([[https://www.youtube.com/watch?v=74zOY-vgkyw&list=PLEoMzSkcN8oPH1au7H6B7bBJ4ZO7BXjSZ]]).
+
+* Code style
+
+Throughout configuration, I use this style:
+
+#+begin_src emacs-lisp :tangle no
+
+  (do 1)
+  (do 2)
+  (do 3)
+
+#+end_src
+
+Instead of:
+
+#+begin_src emacs-lisp :tangle no
+
+  (do (1
+       2
+       3))
+
+#+end_src
+
+As latter style is harder to edit. In first style, it's easy to move elements, add or remove, as first and last element use the same syntax as middle elements.
+
+* Personal constants
+
+Interesting, turns out you still can mutate a variable defined with ~defconst~, so it seems to be just a marker.
+
+There I will collect variables that contain my personal directories and other constants. So that if anyone else would like to use my config, then it could change those values easily. 
+
+#+begin_src emacs-lisp
+
+    (defconst BIBLIOGRAPHY_FILES
+      '("/mnt/data/library/clean/lit.bib"))
+
+    (defconst ORG_AGENDA_FILES
+      '("/mnt/data/notes/calendar.org" "/mnt/data/notes/dump.org" "/mnt/data/notes/project-todos.org" "/mnt/data/notes/todos.org" "/mnt/data/notes/07_02_2025-university_2_kurs_2_semester.org"))
+
+    (defconst PROJECTS_DIR
+      "/mnt/data/projects")
+
+    (defconst ORG_PROJECT_CAPTURE_FILE
+      "/mnt/data/notes/project-todos.org")
+
+    (defconst MBSYNC_CONFIG_FILE
+      "/mnt/data/mail/.mbsyncrc")
+
+    (defconst MAIL_DIR
+      "/mnt/data/mail/")
+
+    (defconst MU_HOME
+      "/mnt/data/mail/.muhome")
+
+    (defconst MU4E_LOAD_PATH
+      "/usr/shar/emacs/site-lisp/mu4e")
+
+    (defconst SAVES_DIR
+      "/mnt/data/misc/file-saves")
+
+    (defconst YAS_SNIPPET_DIR
+      "/mnt/data/projects/yas-snippets")
+
+    (defconst MENTOR_HOME_DIR
+      "/mnt/data/torrents/internal-rtorrent")
+
+    (defconst MENTOR_DOWNLOADS_DIR
+      "/mnt/data/torrents/download")
+
+    (defconst MENTOR_EXTRA_CONF_FILE
+      "/mnt/data/projects/configs/export/rtorrent.rc")
+
+    (defconst FEED_FILE
+      "/mnt/data/projects/configs/feeds.org")
+
+    (defconst ORG_AUTOLOADS_DIR
+      "/mnt/data/projects/org-mode/lisp")
+
+    (defconst ORG_ROAM_DIR
+      "/mnt/data/notes")
+
+    (defconst ORG_FILES
+      '( :todos "/mnt/data/notes/todos.org"
+         :calendar "/mnt/data/notes/calendar.org"
+         :dump "/mnt/data/notes/dump.org"))
+
+    ;; Should be relative to =org-roam-directory= (which in my case is =ORG_ROAM_DIR=).
+    (defconst ORG_ROAM_DAILIES_DIR
+      "journals/")
+
+    (defconst ORG_ATTACHMENTS_DIR
+      "/mnt/data/notes/assets/")
+
+    (defconst DATE_FORMAT
+      "%d.%m.%Y")
+
+    (defconst DATE_FORMAT_FOR_SAVE
+      "%d_%m_%Y")
+
+    (defconst TIME_FORMAT
+      "%H:%M")
+
+    (defconst TIME_FORMAT_FOR_SAVE
+      "%H_%M")
+
+    (defconst DATE_TIME_FORMAT
+      (concat DATE_FORMAT " " TIME_FORMAT))
+
+    (defconst DATE_TIME_FORMAT_FOR_SAVE
+      (concat DATE_FORMAT_FOR_SAVE " " TIME_FORMAT_FOR_SAVE))
+
+#+end_src
+
+** Additional: my signing key
+
+#+begin_src emacs-lisp
+
+  (setq mml-secure-openpgp-signers '("E48F78214714E2801A0499D82AADAC169FBAD443"))
+
+#+end_src
+
+* Global Emacs configuration
+
+Next code does not rely on any external packages.
+ 
+** Global modes
+
+#+begin_src emacs-lisp
+
+  (column-number-mode)
+  (scroll-bar-mode -1)        ; Disable visible scrollbar.
+  (tool-bar-mode -1)          ; Disable the toolbar.
+  (tooltip-mode -1)           ; Disable tooltips.
+  (set-fringe-mode 10)        ; Give some breathing room ???.
+  (menu-bar-mode -1)          ; Disable menu bar.
+  (setq visible-bell t)       ; Do not beep.
+  (recentf-mode t)            ; Store history of recent files.
+
+  (global-auto-revert-mode 1) ; Watch files for changes.
+  (setq global-auto-revert-non-file-buffers t) ; For, e.g., Dired.
+
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+
+  (global-subword-mode)      ; Yes! Hop in Open|Ai|Embeddings like open_ai_embeddings.
+
+#+end_src
+
+** Main font
+
+#+begin_src emacs-lisp
+
+  (set-face-attribute
+   'default
+   nil
+   :font "JetBrainsMono Nerd Font Mono"
+   :height 98
+   :weight 'regular
+   :slant 'normal
+   :width 'normal)
+
+#+end_src
+
+** Miscalleneous commands
+
+=load-prefer-newer= is taken from [[https://emacs.stackexchange.com/a/186]]. It fixes some annoying bugs, when my init config did not up
+
+#+begin_src emacs-lisp
+
+  (setq load-prefer-newer t)
+  (setq inhibit-startup-message t) ; Disable startup screen.
+  (setq mouse-autoselect-window t)
+  (setq focus-follows-mouse t)
+
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ; Make ESC quit prompts
+  (global-unset-key (kbd "C-z")) ; Little shit.
+
+#+end_src
+
+** Easier window resizing
+
+Taken from: [[https://stackoverflow.com/a/15186248]].
+
+#+begin_src emacs-lisp
+
+  (global-set-key (kbd "<C-up>") 'shrink-window)
+  (global-set-key (kbd "<C-down>") 'enlarge-window)
+  (global-set-key (kbd "<C-left>") 'enlarge-window-horizontally)
+  (global-set-key (kbd "<C-right>") 'shrink-window-horizontally)
+
+#+end_src
+
+** Use UTF-8 as much as possible
+
+Taken from: [[https://github.com/johanwiden/exwm-setup/blob/master/.emacs.d/config.org#use-better-defaults-also-see-lolsmacs-below]].
+
+#+begin_src emacs-lisp
+
+  (set-charset-priority 'unicode)
+  (set-default-coding-systems 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (set-selection-coding-system 'utf-8)
+  (set-language-environment "UTF-8")
+  (prefer-coding-system 'utf-8)
+  (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+  ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
+  (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+
+#+end_src
+
+** Backups
+
+Taken from: [[https://stackoverflow.com/a/151946]].
+
+#+begin_src emacs-lisp
+
+  (setq backup-directory-alist `(("." . ,SAVES_DIR)))
+  (setq backup-by-copying t)
+
+  (setq delete-old-versions t
+        kept-new-versions 6
+        kept-old-versions 2
+        version-control t)
+
+#+end_src
+
+** Misc
+
+#+begin_src emacs-lisp
+
+  (setq-default user-mail-address "ruslanpopov1512@gmail.com")
+
+  (global-unset-key (kbd "C-x C-k"))
+
+#+end_src
+
+* Utility functions
+
+#+begin_src emacs-lisp
+
+  ;; Easier syntax for running programs.
+  (defun iay/run-cmd (cmd)
+    (start-process-shell-command cmd nil cmd))
+
+#+end_src
+
+Next function is taken from: [[http://xahlee.info/emacs/emacs/elisp_read_file_content.html]].
+
+#+begin_src emacs-lisp
+
+  (defun get-string-from-file (filePath)
+    "Return file content as string."
+    (with-temp-buffer
+      (insert-file-contents filePath)
+      (buffer-string)))
+
+#+end_src
+
+* Packages and modes
+
+** Eshell
+
+#+begin_src emacs-lisp
+
+  (defun iay/eshell-aliases ()
+    (interactive)
+    (shell-command "alias" "rm" "echo 'error: use `trash` instead of `rm`'"))
+
+  (add-hook 'eshell-mode-hook 'iay/eshell-aliases)
+
+#+end_src
+
+** Set up packages
+
+*** =package=
+
+#+begin_src emacs-lisp
+
+  (require 'package)
+
+  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                           ("org" . "https://orgmode.org/elpa/")
+                           ("elpa" . "https://elpa.gnu.org/packages/")))
+
+  (package-initialize)
+
+  (unless package-archive-contents
+    (package-refresh-contents))
+
+#+end_src
+
+*** org autoload
+
+#+begin_src emacs-lisp
+
+  (add-to-list 'load-path ORG_AUTOLOADS_DIR)
+
+#+end_src
+
+*** =use-package=
+
+#+begin_src emacs-lisp
+
+  (unless (package-installed-p 'use-package)
+    (package-install 'use-package))
+
+  (require 'use-package)
+  (setq use-package-always-ensure t)
+
+#+end_src
+
+** Styling/themeing
+
+*** Main theme
+
+#+begin_src emacs-lisp
+
+  (use-package modus-themes
+    :config
+    (load-theme 'modus-operandi t))
+
+#+end_src
+
+*** Mode line
+
+I like =mood-line= , because it has an easy example on how to construct the mode line in =README= .
+
+#+begin_src emacs-lisp
+
+  (use-package mood-line
+    :custom
+    (mood-line-glyph-alist mood-line-glyphs-unicode)
+    (mood-line-format mood-line-format-default-extended)
+
+    :config
+    (mood-line-mode))
+
+#+end_src
+
+Currently, EXWM hides header-line.
+
+#+begin_src emacs-lisp :tangle no
+
+  (setq-default header-line-format mode-line-format)
+  (setq-default mode-line-format nil)
+
+#+end_src
+
+*** Paddings
+
+#+begin_src emacs-lisp
+
+  (use-package spacious-padding
+    :custom
+    (spacious-padding-widths
+     '( :internal-border-width 15
+        :header-line-width 4
+        :mode-line-width 6
+        :tab-width 4
+        :right-divider-width 30
+        :scroll-bar-width 8
+        :fringe-width 8))
+    (spacious-padding-subtle-mode-line
+     `( :mode-line-active 'default
+        :mode-line-inactive vertical-border))
+
+    :config
+    (spacious-padding-mode 1))
+
+#+end_src
+
+*** Minibuffer :unused:
+
+#+begin_src emacs-lisp :tangle no
+
+  (use-package mini-frame
+    :config
+    (mini-frame-mode 1))
+
+#+end_src
+
+*** Rainbow delimiters
+
+#+begin_src emacs-lisp
+
+  (use-package rainbow-delimiters
+    :hook
+    (prog-mode . rainbow-delimiters-mode))
+
+#+end_src
+
+*** Icons
+
+Taken from: [[https://github.com/daviwil/emacs-from-scratch/blob/82d24eea516e7799ead20cf068542e2b5ecb270e/init.el]].
+
+*NOTE*: The first time you load your configuration on a new machine, you'll need to run the following command interactively so that mode line icons display correctly:
+
+: M-x all-the-icons-install-fonts
+
+#+begin_src emacs-lisp
+
+  (use-package all-the-icons
+    :config
+    (set-fontset-font t 'unicode (font-spec :family "all-the-icons") nil 'append)
+    (set-fontset-font t 'unicode (font-spec :family "file-icons") nil 'append)
+    (set-fontset-font t 'unicode (font-spec :family "Material Icons") nil 'append)
+    (set-fontset-font t 'unicode (font-spec :family "github-octicons") nil 'append)
+    (set-fontset-font t 'unicode (font-spec :family "FontAwesome") nil 'append)
+    (set-fontset-font t 'unicode (font-spec :family "Weather Icons") nil 'append))
+
+  (use-package all-the-icons-dired
+    :hook
+    (dired-mode . all-the-icons-dired-mode))
+
+#+end_src
+
+** Packages for using the computer
+
+Like in a desktop environment.
+
+*** =dired=
+
+To reduce buffer count I used: [[https://stackoverflow.com/a/68952245]].
+
+#+begin_src emacs-lisp
+
+  (setq dired-listing-switches "-agho --group-directories-first")
+                                          ;(setf dired-kill-when-opening-new-dired-buffer t)
+
+#+end_src
+
+Taken a lot from: [[https://github.com/daviwil/emacs-from-scratch/blob/8c302a79bf5700f6ef0279a3daeeb4123ae8bd59/Emacs.org#dired]].
+
+Something makes dired go insane when switching dirs.
+
+#+begin_src emacs-lisp
+
+  ;; IDK, why these 2 don't work.
+  ;; (use-package dired)
+  ;; (use-package dired-single)
+
+  ;; (use-package dired-open
+  ;;   :config
+  ;;   (add-to-list 'dired-open-functions #'dired-open-xdg t))
+
+  ;; (use-package dired-hide-dotfiles
+  ;;   :hook
+  ;;   (dired-mode . dired-hide-dotfiles-mode)
+
+  ;;   :config
+  ;;   (evil-define-key 'normal dired-mode-map "H" 'dired-hide-dotfiles-mode))
+
+#+end_src
+
+*** Multi-term
+
+Several terminals. Taken from: [[https://www.emacswiki.org/emacs/MultiTerm]].
+
+#+begin_src emacs-lisp
+
+  (use-package multi-term
+    :custom
+    (multi-term-program "/bin/zsh"))
+
+#+end_src
+
+*** Reading documents
+
+**** =doc-view=
+
+#+begin_src emacs-lisp
+
+  (setq doc-view-resolution 300)
+
+#+end_src
+
+**** =pdf-tools=
+
+#+begin_src emacs-lisp
+
+  (use-package pdf-tools
+    :config
+    (pdf-loader-install))
+
+#+end_src
+
+*** Social
+
+**** Email
+
+Taken a lot from:
+
+- [[https://www.youtube.com/watch?v=yZRyEhi4y44&list=PLEoMzSkcN8oM-kA19xOQc8s0gr0PpFGJQ&index=4]].
+- [[https://www.youtube.com/watch?v=olXpfaSnf0o&list=PLEoMzSkcN8oM-kA19xOQc8s0gr0PpFGJQ&index=5]].
+
+#+begin_src emacs-lisp
+
+  (use-package mu4e
+    :ensure
+    nil
+
+    ;; :defer
+    ;; 20
+
+    :load-path
+    MU4E_LOAD_PATH
+
+    :custom
+    (mu4e-change-filenames-when-moving t)
+    (mu4e-update-interval (* 5 60)) ; Every 5 minutes.
+    (mu4e-get-mail-command (format "mbsync -a --config %s" MBSYNC_CONFIG_FILE))
+    (mu4e-maildir MAIL_DIR)
+    (mu4e-mu-home MU_HOME)
+    (mu4e-compose-format-flowed t)
+    (message-send-mail-function 'message-send-mail-with-sendmail)
+    (sendmail-program "/usr/bin/msmtp")
+    (send-mail-function 'smtpmail-send-it)
+    (message-sendmail-f-is-evil t)
+    (message-sendmail-extra-arguments '("--read-envelope-from"))
+
+    :config
+    (require 'mu4e-org)
+    (mu4e t)
+    (setq mu4e-contexts
+          (list
+           (make-mu4e-context
+            :name
+            "gmail"
+
+            :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
+
+            :vars `((user-mail-address . "ruslanpopov1512@gmail.com")
+                    (user-full-name    . "Ruslan Popov")
+                    (mu4e-drafts-folder  . "/gmail/[Gmail]/Drafts")
+                    (mu4e-sent-folder  . "/gmail/[Gmail]/Sent Mail")
+                    (mu4e-refile-folder  . "/gmail/[Gmail]/All Mail")
+                    (mu4e-trash-folder  . "/gmail/[Gmail]/Trash")))
+           (make-mu4e-context
+            :name
+            "new-uni"
+
+            :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/uni-new" (mu4e-message-field msg :maildir))))
+
+            :vars `((user-mail-address . "popov_r@365.dnu.edu.ua")
+                    (user-full-name    . "Ruslan Popov")
+                    (mu4e-drafts-folder  . "/uni-new/Drafts")
+                    (mu4e-sent-folder  . "/uni-new/Sent Items")
+                    ;; (mu4e-refile-folder  . "/uni-new/inbox")
+                    (mu4e-trash-folder  . "/uni-new/Trash")))
+           (make-mu4e-context
+            :name
+            "old-uni"
+
+            :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "/uni-old" (mu4e-message-field msg :maildir))))
+
+            :vars `((user-mail-address . "popov_ro@ffeks.dnu.edu.ua")
+                    (user-full-name    . "Ruslan Popov")
+                    (mu4e-drafts-folder  . "/uni-old/Drafts")
+                    (mu4e-sent-folder  . "/uni-old/Sent Items")
+                    ;; (mu4e-refile-folder  . "/uni-old/inbox")
+                    (mu4e-trash-folder  . "/uni-old/Trash"))))))
+
+#+end_src
+
+Next snippet of code, taken from [[https://l2dy.github.io/notes/Emacs/mu4e/Prefer-Plain-Text-in-mu4e]], should allow to prefer plain text over HTML in email rendering.
+
+#+begin_src emacs-lisp
+
+  (with-eval-after-load "mm-decode"
+    (add-to-list 'mm-discouraged-alternatives "text/html")
+    (add-to-list 'mm-discouraged-alternatives "text/richtext"))
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+  (use-package mu4e-alert
+    :config
+    (mu4e-alert-set-default-style 'notifications)
+    (add-hook 'after-init-hook #'mu4e-alert-enable-notifications))
+
+#+end_src
+
+**** Telegram
+
+#+begin_src emacs-lisp
+
+  (use-package telega
+    :custom
+    (telega-server-libs-prefix "/usr")
+
+    :config
+    (define-key global-map (kbd "C-c t") telega-prefix-map)
+    (telega-notifications-mode 1))
+
+#+end_src
+
+**** RSS/Atom
+
+#+begin_src emacs-lisp
+
+  (use-package elfeed
+    :bind
+    ("C-x f" . elfeed)
+
+    :custom
+    (elfeed-search-filter "@6-months-ago")
+    (elfeed-search-date-format `(,DATE_TIME_FORMAT 13 :left)))
+
+#+end_src
+
+I don't really liked that one.
+    
+#+begin_src emacs-lisp :tangle no
+
+  (use-package elfeed-goodies
+    :config
+    (elfeed-goodies/setup))
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+  (use-package elfeed-org
+    :custom
+    (rmh-elfeed-org-files (list FEED_FILE))
+
+    :config
+    (elfeed-org))
+
+#+end_src
+
+*** Torrent
+
+#+begin_src emacs-lisp
+
+  (use-package transmission)
+
+#+end_src
+
+Old:
+
+#+begin_src emacs-lisp :tangle no
+
+  (use-package mentor
+    :custom
+    (mentor-home-dir MENTOR_HOME_DIR)
+    (mentor-rtorrent-extra-conf (get-string-from-file MENTOR_EXTRA_CONF_FILE))
+    (mentor-rtorrent-download-directory MENTOR_DOWNLOADS_DIR))
+
+#+end_src
+
+*** Copy/pasting
+
+#+begin_src emacs-lisp
+
+  (use-package xclip
+    :config
+    (xclip-mode 1))
+
+#+end_src
+xo
+** Ivy-counsel-swiper trio
+
+*** =ivy=
+
+=ivy= is a completion framework.
+
+#+begin_src emacs-lisp
+
+  (use-package ivy
+    :bind
+    (:map ivy-minibuffer-map
+          ("TAB" . ivy-alt-done)	
+          ("C-l" . ivy-alt-done)
+          ("C-j" . ivy-next-line)
+          ("C-k" . ivy-previous-line)
+          :map ivy-switch-buffer-map
+          ("C-k" . ivy-previous-line)
+          ("C-l" . ivy-done)
+          ("C-d" . ivy-switch-buffer-kill)
+          :map ivy-reverse-i-search-map
+          ("C-k" . ivy-previous-line)
+          ("C-d" . ivy-reverse-i-search-kill))
+
+    :custom
+    (ivy-count-format "(%d/%d) ")
+    (ivy-use-virtual-buffers t)
+
+    :config
+    (ivy-mode))
+
+#+end_src
+
+*** =ivy-rich=
+
+Better looking interface for =ivy=.
+
+Basic config taken from: [[https://github.com/Yevgnen/ivy-rich?tab=readme-ov-file#basic-usages]].
+
+#+begin_src emacs-lisp
+
+  (use-package ivy-rich
+    :config
+    (ivy-rich-mode))
+
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
+
+#+end_src
+
+*** =counsel=
+
+=counsel= is a collection of enhanced Emacs commands.
+
+#+begin_src emacs-lisp
+
+  (use-package counsel
+    :after ivy
+
+    :bind
+    ("M-x" . counsel-M-x)
+    ("C-x b" . counsel-ibuffer)
+    ("C-x C-f" . counsel-find-file)
+
+    :custom
+    (ivy-initial-input-alist nil) ;; Don't start with ^. DOES NOT WORK
+
+    :config
+    (counsel-mode))
+
+#+end_src
+
+*** =prescient=
+
+As said in [[https://www.youtube.com/watch?v=T9kygXveEz0]], it should be loaded after =counsel=.
+
+#+begin_src emacs-lisp
+
+  (use-package ivy-prescient
+    :after
+    counsel
+
+    ;; :custom
+    ;; (prescient-sort-length-enable nil)
+
+    :config
+    (ivy-prescient-mode 1))
+
+  (use-package company-prescient
+    :after
+    company
+
+    :config
+    (company-prescient-mode 1))
+
+  (prescient-persist-mode 1)
+
+#+end_src
+
+*** =swiper=
+
+=swiper= is enhanced search.
+
+#+begin_src emacs-lisp
+
+  (use-package swiper
+    :after ivy
+
+    :bind
+    ("C-s" . swiper)
+    ("C-r" . swiper))
+
+#+end_src
+
+** Parenthesis
+
+*** =smartparens=
+
+#+begin_src emacs-lisp
+
+  (use-package smartparens
+    :config
+    (require 'smartparens-config) ; Yes, not `use-package`.
+    (smartparens-global-mode t))
+
+  ;; Taken from: [[https://stackoverflow.com/a/35469843]].
+  (with-eval-after-load 'smartparens
+    (sp-with-modes
+        '(c++-mode objc-mode c-mode)
+      (sp-local-pair "{" nil :post-handlers '(:add ("||\n[i]" "RET")))))
+
+#+end_src
+
+*** Auto indent new lines
+
+#+begin_src emacs-lisp
+
+  (defun indent-between-pair (&rest _ignored)
+    (newline)
+    (indent-according-to-mode)
+    (forward-line -1)
+    (indent-according-to-mode))
+
+  (sp-local-pair 'prog-mode "{" nil :post-handlers '((indent-between-pair "RET")))
+  (sp-local-pair 'prog-mode "[" nil :post-handlers '((indent-between-pair "RET")))
+  (sp-local-pair 'prog-mode "(" nil :post-handlers '((indent-between-pair "RET")))
+
+#+end_src
+
+** LaTeX
+
+*** =auctex= and general config
+
+Setting up =latex-preview-pane-mode= is taken from: [[https://emacs.stackexchange.com/a/21590]].
+
+#+begin_src emacs-lisp
+
+  (use-package auctex)
+
+  (setq-default TeX-brace-indent-level 4)
+  (setq-default LaTeX-indent-level 4)
+
+  (setq-default TeX-engine 'xetex)
+  (setq-default TeX-PDF-mode t)
+
+  (eval-after-load "tex"
+    '(add-to-list
+      'TeX-view-program-list
+      '("preview-pane-mode"
+        latex-preview-pane-mode)))
+
+#+end_src
+
+*** =latex-preview-pane=
+
+#+begin_src emacs-lisp
+
+  (use-package latex-preview-pane
+    :config
+    (latex-preview-pane-enable))
+
+#+end_src
+
+*** General config
+
+#+begin_src emacs-lisp
+
+  (setq org-export-with-toc nil)
+  (setq org-latex-title-command "\\maketitle")
+
+  (setq org-latex-compiler "xelatex")
+
+                                          ; TODO: MOVE TO ORG.
+  ;; (add-to-list 'org-latex-classes
+  ;; 	     '("inanyan-paper"
+  ;; 	       "\\documentclass{inanyan-paper}
+  ;; 		[NO-DEFAULT-PACKAGES]
+  ;; 		[NO-PACKAGES] "
+  ;; 	       ("\\section{%s}" . "\\section*{%s}")
+  ;; 	       ("\\subsection{%s}" . "\\subsection*{%s}")
+  ;; 	       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+  ;; 	       ("\\paragraph{%s}" . "\\paragraph*{%s}")
+  ;; 	       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  ;; (add-to-list 'org-latex-classes
+  ;; 	     '("inanyan-paper-new"
+  ;; 	       "\\documentclass{inanyan-paper-new}
+  ;; 		[NO-DEFAULT-PACKAGES]
+  ;; 		[NO-PACKAGES] "
+  ;; 	       ("\\section{%s}" . "\\section*{%s}")
+  ;; 	       ("\\subsection{%s}" . "\\subsection*{%s}")
+  ;; 	       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+  ;; 	       ("\\paragraph{%s}" . "\\paragraph*{%s}")
+  ;; 	       ("\\
+  ;; subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+#+end_src
+
+** Help packages
+
+*** =which-key=
+
+It's a panel popup when you start a keybinding.
+
+#+begin_src emacs-lisp
+
+  (use-package which-key
+    :custom
+    (which-key-idle-delay 0.3)
+
+    :config
+    (which-key-mode))
+
+#+end_src
+
+*** =helpful=
+
+Improved Emacs help buffer.
+
+#+begin_src emacs-lisp
+
+  (use-package helpful
+    :commands
+    (helpful-callable helpful-variable helpful-command helpful-key)
+
+    :custom
+    (counsel-describe-function-function #'helpful-callable)
+    (counsel-describe-variable-function #'helpful-variable)
+
+    :bind
+    ([remap describe-function] . counsel-describe-function)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-variable] . counsel-describe-variable)
+    ([remap describe-key] . helpful-key))
+
+#+end_src
+
+** Org
+
+*** =org=
+
+Org is installed by default in Emacs, if I remember correctly, but it's better to use external link for downloading org, which was specified in =package-lists=.
+
+The setup of ORG mode is taken a lot from these resources:
+
+- [[https://github.com/daviwil/emacs-from-scratch/blob/1a13fcf0dd6afb41fce71bf93c5571931999fed8/init.el]]
+- [[https://zzamboni.org/post/beautifying-org-mode-in-emacs]]
+
+#+begin_src emacs-lisp
+
+  (use-package org
+    :hook
+    (org-mode . org-indent-mode)
+    (org-mode . visual-line-mode)
+    (org-babel-after-execute . org-link-preview-refresh)
+
+    :bind
+    ("C-c c" . org-capture)
+    ("C-c a" . org-agenda)
+    ("C-c l" . org-store-link)
+
+    :custom
+    (org-attach-id-dir ORG_ATTACHMENTS_DIR)
+    (org-ellipsis " ▾")
+    (org-startup-with-inline-images t)
+    (org-todo-keywords '((sequence "TODO" "DOING" "|" "DONE" "NOTP")))
+    (org-log-done t)
+    (org-agenda-files ORG_AGENDA_FILES)
+    (org-agenda-start-with-log-mode t)
+    (org-log-into-drawer t)
+    (org-auto-tangle-default t))
+
+  (advice-add 'org-refile :after 'org-save-all-org-buffers) ; As by default, when you refile, files are not saved.
+
+#+end_src
+
+Full Org configuration is presented in section Org.
+
+*** =doct= and captures
+
+=doct= is used for declarative =org-capture= templates.
+
+#+begin_src emacs-lisp
+
+  (use-package doct)
+
+  (global-set-key (kbd "M-q") 'org-capture)
+
+  (setq
+   org-capture-templates
+   (doct `(( "TODO" :keys "t"
+  	   :type entry
+  	   :template "* TODO %?\n%U\n%a\n%i\n"
+      	   :headline "Active"
+      	   :empty-lines 1
+  	   :file ,(plist-get ORG_FILES :todos))
+  	 ( "Calendar entry" :keys "c"
+  	   :type entry
+  	   :template "* TODO %?\n%U\n%a\n%i\n"
+      	   :headline "Active"
+      	   :empty-lines 1
+  	   :file ,(plist-get ORG_FILES :calendar))
+  	 ( "Dump" :keys "d"
+  	   :type entry
+  	   :template "* %?\n%U\n%a\n%i\n"
+      	   :headline "Active"
+      	   :empty-lines 1
+  	   :file ,(plist-get ORG_FILES :dump)))))
+
+#+end_src
+
+*** =org-babel=
+
+#+begin_src emacs-lisp
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (python . t)))
+
+  (setq org-confirm-babel-evaluate nil)
+
+#+end_src
+
+*** =org-autolist=
+
+Better handling of lists. (Like, when you type =RET= , you would like to insert a new item).
+
+#+begin_src emacs-lisp
+
+  (use-package org-autolist
+    :hook
+    (org-mode . org-autolist-mode))
+
+#+end_src
+
+*** =org-bullets=
+
+#+begin_src emacs-lisp
+
+  (use-package org-bullets
+    :after org
+
+    :custom
+    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+#+end_src
+
+*** =org-auto-tangle=
+
+Automatically tangle files on save. Well, I'm not sure if a whole package is needed for this...
+
+#+begin_src emacs-lisp
+
+  (use-package org-auto-tangle
+    :hook
+    (org-mode . org-auto-tangle-mode))
+
+#+end_src
+
+*** =org-appear=
+
+#+begin_src emacs-lisp
+
+  (use-package org-appear
+    :hook
+    (org-mode . org-appear-mode))
+
+#+end_src
+
+*** =org-mime=
+
+#+begin_src emacs-lisp
+
+  (use-package org-mime
+    ;; :hook
+    ;; (message-send . org-mime-htmlize)
+    :custom
+    (org-mime-export-options '(:section-numbers nil :with-author nil :with-toc nil)))
+
+#+end_src
+
+*** =org-roam=
+
+#+begin_src emacs-lisp
+
+  (use-package org-roam
+    :custom
+    (org-roam-directory ORG_ROAM_DIR)
+    (org-roam-completion-everywhere t)
+
+    (org-roam-dailies-capture-templates
+     `(("d" "default" entry "* %?" :target
+        (file+head ,(concat "%<" DATE_FORMAT_FOR_SAVE ">.org") ,(concat "#+TITLE: Journal for " DATE_FORMAT "\n\n")))))
+
+    (org-roam-dailies-directory ORG_ROAM_DAILIES_DIR)
+
+    (org-roam-capture-templates
+     `(("d" "default" plain "%?" :target
+        (file+head ,(concat "%<" DATE_FORMAT_FOR_SAVE ">-${slug}.org") "#+TITLE: ${title}\n\n")
+        :unnarrowed t)))
+    
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+      	 ("C-c n f" . org-roam-node-find)
+      	 ("C-c n i" . org-roam-node-insert)
+      	 :map org-mode-map
+      	 ("C-M-i"    . completion-at-point))
+    :config
+    (org-roam-setup))
+
+#+end_src
+
+*** =org-notifications=
+
+#+begin_src emacs-lisp
+
+  (use-package org-notifications)
+
+#+end_src
+
+** AI
+
+*** GPTel
+
+#+begin_src emacs-lisp
+
+  (use-package gptel)
+
+  (gptel-make-ollama "Ollama"
+    :host "localhost:11434"
+    :stream t
+    :models '(gemma2:2b-instruct-q4_K_M llama3.2:3b qwen2.5:3b qwen2.5:0.5b))
+
+#+end_src
+
+** Programming
+
+*** Core packages
+
+**** Company
+
+#+begin_src emacs-lisp
+
+  (use-package company
+    :custom
+    (company-idle-delay 0.5)
+    ;; (company-begin-commands nil) ;; uncomment to disable popup
+    :bind
+    (:map company-active-map
+          ("C-j". company-select-next)
+          ("C-k". company-select-previous)
+          ("C-h". company-select-first)
+          ("C-l". company-select-last)))
+
+#+end_src
+
+**** Yasnippet
+
+#+begin_src emacs-lisp
+
+  (use-package yasnippet
+    :hook
+    (prog-mode . yas-minor-mode)
+    (text-mode . yas-minor-mode)
+
+    :custom
+    (yas-snippet-dirs (list YAS_SNIPPET_DIR))
+
+    :config
+    (yas-reload-all))
+
+#+end_src
+
+**** Flycheck
+
+#+begin_src emacs-lisp
+
+  (use-package flycheck)
+
+#+end_src
+
+**** LSP
+
+#+begin_src emacs-lisp
+
+  (use-package lsp-mode
+    :commands lsp
+    :custom
+    ;; what to use when checking on-save. "check" is default, I prefer clippy
+    (lsp-rust-analyzer-cargo-watch-command "clippy")
+    (lsp-eldoc-render-all t)
+    (lsp-idle-delay 0.6)
+    ;; enable / disable the hints as you prefer:
+    (lsp-inlay-hint-enable t)
+    ;; These are optional configurations. See https://emacs-lsp.github.io/lsp-mode/page/lsp-rust-analyzer/#lsp-rust-analyzer-display-chaining-hints for a full list
+    ;; (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+    ;; (lsp-rust-analyzer-display-chaining-hints t)
+    ;; (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
+    ;; (lsp-rust-analyzer-display-closure-return-type-hints t)
+    ;; (lsp-rust-analyzer-display-parameter-hints nil)
+    ;; (lsp-rust-analyzer-display-reborrow-hints nil)
+    :config
+    (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+  (use-package lsp-ui
+    :commands lsp-ui-mode
+    :custom
+    (lsp-ui-peek-always-show t)
+    (lsp-ui-sideline-show-hover t)
+    (lsp-ui-doc-enable nil))
+
+#+end_src
+
+*** Projectile
+
+Taken from: [[https://github.com/daviwil/emacs-from-scratch/blob/500370fa06889dad313e60473d73090fcfbe106d/init.el]].
+
+Programming languages modes turned out to be that powerful, so I'm not sure: do I need projectile?
+
+#+begin_src emacs-lisp
+
+  (use-package projectile
+    :init
+    (when (file-directory-p PROJECTS_DIR)
+      (setq projectile-project-search-path (list PROJECTS_DIR)))
+    (setq projectile-switch-project-action #'projectile-dired)
+
+    :bind-keymap
+    ("C-c p" . projectile-command-map)
+
+    :custom
+    (projectile-completion-system 'ivy)
+
+    :config
+    (projectile-mode))
+
+  (use-package counsel-projectile
+    :after projectile
+
+    :config
+    (counsel-projectile-mode))
+
+  (use-package org-project-capture
+    :bind
+    (("C-c n p" . org-project-capture-project-todo-completing-read))
+
+    :config
+                                          ;(setq org-project-capture-backend
+                                          ;      (make-instance 'org-project-capture-projectile-backend))
+    (setq org-project-capture-projects-file ORG_PROJECT_CAPTURE_FILE)
+    (org-project-capture-single-file))
+
+  (use-package org-projectile)
+
+#+end_src
+
+*** Programming languages
+
+**** Rust
+
+Taken a lot from:
+
+- [[https://robert.kra.hn/posts/rust-emacs-setup/]].
+
+#+begin_src emacs-lisp
+
+  (use-package rustic
+    :bind
+    (:map rustic-mode-map
+          ("M-j" . lsp-ui-imenu)
+          ("M-?" . lsp-find-references)
+          ("C-c C-c l" . flycheck-list-errors)
+          ("C-c C-c a" . lsp-execute-code-action)
+          ("C-c C-c r" . lsp-rename)
+          ("C-c C-c q" . lsp-workspace-restart)
+          ("C-c C-c Q" . lsp-workspace-shutdown)
+          ("C-c C-c s" . lsp-rust-analyzer-status))
+    
+    :custom
+    (rustic-rustfmt-config-alist '((edition . "2021")))
+    
+    (lsp-eldoc-hook nil)
+    (lsp-enable-symbol-highlighting nil)
+    (lsp-signature-auto-activate nil)
+
+    (rustic-format-on-save t))
+
+#+end_src
+
+**** YAML
+
+#+begin_src emacs-lisp
+
+  (use-package yaml)
+
+#+end_src
+
+**** Python
+
+#+begin_src emacs-lisp
+
+  (use-package pyvenv)
+
+#+end_src
+
+** Miscalleneous packages
+
+#+begin_src emacs-lisp
+
+  ;; Log commands you typed.
+  (use-package command-log-mode) 
+
+#+end_src
+
+* Post-amble
+
+#+begin_src emacs-lisp
+
+  (server-start)
+
+#+end_src
+
+#+begin_src emacs-lisp
+
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(auth-source-save-behavior nil)
+   '(custom-safe-themes
+     '("fbf73690320aa26f8daffdd1210ef234ed1b0c59f3d001f342b9c0bbf49f531c" default))
+   '(package-selected-packages
+     '(doct latex-preview-pane auctex LaTeX visual-fill-column org-bullets evil-org evil-collection evil-leader key-chord evil general all-the-icons helpful ivy-rich which-key rainbow-delimiters rainbow-delimeters modus-themes desktop-environment exwm-systemtray exwm-randr exwm mood-line powerline citar counsel ivy command-log-mode))
+   '(pdf-latex-command "xelatex"))
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   )
+
+#+end_src

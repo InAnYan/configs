@@ -1,10 +1,18 @@
-# Run menu.
+# Run terminal.
 super + Return
 	mlterm
 
-# Run terminal.
+# Run Emacs.
+super + e
+      emacsclient --create-frame
+
+# Open menu for running programs.
 super + @space
-	dmenu_run
+      rofi -show run
+
+# Open menu for opened windows.
+super + Shift + @space
+      rofi -show window
 
 # Take screenshot of a part of a screen.
 Print
@@ -14,12 +22,21 @@ Print
 Shift + Print
 	flameshot full
 
+super + alt + e
+      setxkbmap us
+
+super + alt + u
+      setxkbmap ua
+
+super + alt + r
+      setxkbmap ru
+
 # Quit.
 super + alt + q
 	bspc quit
 
 # Restart.
-super + alt + r
+super + alt + shift + r
 	bspc wm -r
 
 # Close program.
